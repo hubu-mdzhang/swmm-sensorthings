@@ -1,0 +1,34 @@
+# Maven
+.mvn/
+mvnw
+mvnw.bat
+target/
+
+# Gradle
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+build/
+
+# VSCode
+.vscode/
+
+# Visual Studio
+.vs/
+
+# Eclipse
+.settings/
+.classpath
+.project
+
+# IDEA
+.idea/
+*.iml
+
+# Node.js
+node_modules/
+dist/
+
+# draw.io
+*.dio.bkp
