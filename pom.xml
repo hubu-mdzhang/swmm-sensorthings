@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.gitee.swsk33</groupId>
+	<artifactId>swmm-sensorthings-parent</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+	<name>SWMM to SensorThings Parent</name>
+	<description>SWMM到SensorThings概念模型映射-父模块</description>
+
+	<modules>
+		<module>server</module>
+		<module>model</module>
+	</modules>
+
+	<properties>
+		<java.version>21</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<lombok.version>1.18.34</lombok.version>
+		<app.version>1.0.0</app.version>
+	</properties>
+
+	<!-- 公共依赖 -->
+	<dependencies>
+		<!-- Lombok注解 -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+		</dependency>
+	</dependencies>
+</project>

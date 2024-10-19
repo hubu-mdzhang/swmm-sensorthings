@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.gitee.swsk33</groupId>
+		<artifactId>swmm-sensorthings-parent</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<artifactId>swmm-sensorthings-model</artifactId>
+	<name>SensorThings API Model</name>
+	<description>SensorThings API概念模型的Java表达</description>
+
+	<dependencies>
+		<!-- FastJSON2 -->
+		<dependency>
+			<groupId>com.alibaba.fastjson2</groupId>
+			<artifactId>fastjson2</artifactId>
+			<version>2.0.53</version>
+		</dependency>
+	</dependencies>
+</project>
