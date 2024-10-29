@@ -1,7 +1,6 @@
 package com.gitee.swsk33.swmmsensorthings.model;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.gitee.swsk33.swmmsensorthings.annotation.MetaProperty;
 import com.gitee.swsk33.swmmsensorthings.annotation.SensorThingsOptional;
 import lombok.Data;
 
@@ -9,23 +8,7 @@ import lombok.Data;
  * 兴趣要素
  */
 @Data
-public class FeatureOfInterest {
-
-	/**
-	 * 唯一标识
-	 */
-	@MetaProperty
-	private Object id;
-
-	/**
-	 * 名称
-	 */
-	private String name;
-
-	/**
-	 * 描述
-	 */
-	private String description;
+public class FeatureOfInterest extends SensorThingsObject {
 
 	/**
 	 * 编码类型

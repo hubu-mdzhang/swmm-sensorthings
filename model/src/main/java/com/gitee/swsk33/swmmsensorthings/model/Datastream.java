@@ -1,7 +1,6 @@
 package com.gitee.swsk33.swmmsensorthings.model;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.gitee.swsk33.swmmsensorthings.annotation.MetaProperty;
 import com.gitee.swsk33.swmmsensorthings.annotation.SensorThingsOptional;
 import lombok.Data;
 
@@ -11,23 +10,7 @@ import java.time.LocalDateTime;
  * 数据流
  */
 @Data
-public class Datastream {
-
-	/**
-	 * 唯一标识
-	 */
-	@MetaProperty
-	private Object id;
-
-	/**
-	 * 名称
-	 */
-	private String name;
-
-	/**
-	 * 描述
-	 */
-	private String description;
+public class Datastream extends SensorThingsObject {
 
 	/**
 	 * 观测类型

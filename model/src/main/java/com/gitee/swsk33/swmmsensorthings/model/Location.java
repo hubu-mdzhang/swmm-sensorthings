@@ -1,7 +1,6 @@
 package com.gitee.swsk33.swmmsensorthings.model;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.gitee.swsk33.swmmsensorthings.annotation.MetaProperty;
 import com.gitee.swsk33.swmmsensorthings.annotation.SensorThingsOptional;
 import lombok.Data;
 
@@ -11,23 +10,7 @@ import java.util.List;
  * 表示一个地点
  */
 @Data
-public class Location {
-
-	/**
-	 * 唯一标识
-	 */
-	@MetaProperty
-	private Object id;
-
-	/**
-	 * 名称
-	 */
-	private String name;
-
-	/**
-	 * 描述
-	 */
-	private String description;
+public class Location extends SensorThingsObject {
 
 	/**
 	 * 编码类型
