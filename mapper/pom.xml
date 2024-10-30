@@ -10,18 +10,7 @@
 	<name>SWMM-SensorThings Model Mapper</name>
 	<description>SWMM到SensorThings API模型映射层</description>
 
-	<properties>
-		<mapstruct.version>1.6.0</mapstruct.version>
-	</properties>
-
 	<dependencies>
-		<!-- MapStruct对象转换 -->
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-			<version>${mapstruct.version}</version>
-		</dependency>
-
 		<!-- SWMM-Java调用 -->
 		<dependency>
 			<groupId>io.github.swsk33</groupId>
@@ -29,38 +18,4 @@
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.13.0</version>
-				<configuration>
-					<annotationProcessorPaths>
-						<!-- 配置MapStruct注解生成器 -->
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>${mapstruct.version}</version>
-						</path>
-
-						<!-- 配置Lombok -->
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-							<version>${lombok.version}</version>
-						</path>
-
-						<!-- 配置Lombok和MapStruct绑定器 -->
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok-mapstruct-binding</artifactId>
-							<version>0.2.0</version>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
