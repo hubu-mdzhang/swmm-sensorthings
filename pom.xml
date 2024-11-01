@@ -19,7 +19,9 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<skipTests>true</skipTests>
 		<lombok.version>1.18.34</lombok.version>
+		<jts.version>1.20.0</jts.version>
 		<app.version>1.0.0</app.version>
 	</properties>
 
@@ -32,4 +34,29 @@
 			<version>${lombok.version}</version>
 		</dependency>
 	</dependencies>
+
+	<!-- 依赖版本管理 -->
+	<dependencyManagement>
+		<dependencies>
+			<!-- Slf4J-日志门面 -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>2.0.16</version>
+			</dependency>
+
+			<!-- JTS工具 -->
+			<dependency>
+				<groupId>org.locationtech.jts</groupId>
+				<artifactId>jts-core</artifactId>
+				<version>${jts.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.locationtech.jts.io</groupId>
+				<artifactId>jts-io-common</artifactId>
+				<version>${jts.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

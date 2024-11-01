@@ -11,11 +11,24 @@
 	<description>SWMM到SensorThings API模型映射层</description>
 
 	<dependencies>
+		<!-- 日志门面 -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		
 		<!-- SWMM-Java调用 -->
 		<dependency>
 			<groupId>io.github.swsk33</groupId>
 			<artifactId>swmm-java</artifactId>
 			<version>1.0.0</version>
+		</dependency>
+
+		<!-- SensorThings模型层 -->
+		<dependency>
+			<groupId>com.gitee.swsk33</groupId>
+			<artifactId>swmm-sensorthings-model</artifactId>
+			<version>${app.version}</version>
 		</dependency>
 	</dependencies>
 </project>

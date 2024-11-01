@@ -17,5 +17,16 @@
 			<artifactId>fastjson2</artifactId>
 			<version>2.0.53</version>
 		</dependency>
+
+		<!-- JTS工具 -->
+		<dependency>
+			<groupId>org.locationtech.jts</groupId>
+			<artifactId>jts-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.locationtech.jts.io</groupId>
+			<artifactId>jts-io-common</artifactId>
+		</dependency>
 	</dependencies>
 </project>
