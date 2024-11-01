@@ -61,4 +61,36 @@ public class Datastream extends SensorThingsObject {
 	 */
 	private ObservedProperty observedProperty;
 
+	/**
+	 * 创建一个Datastream对象，基于已有数据
+	 *
+	 * @param observation      数据流对应的观测结果，会将其datastream属性关联到该方法创建的数据流上
+	 * @param observedProperty 数据流对应的观测属性
+	 * @return 数据流对象
+	 */
+	public static Datastream create(Observation observation, ObservedProperty observedProperty) {
+		Datastream datastream = new Datastream();
+		datastream.setName(observation.getName() + "datastream");
+		datastream.setDescription("The datastream of observation " + observation.getName());
+		datastream.setObservationType("");
+		datastream.setUnitOfMeasurement(new JSONObject());
+		datastream.setObservedProperty(observedProperty);
+		observation.setDatastream(datastream);
+		return datastream;
+	}
+
+	/**
+	 * 创建一个Datastream对象，基于已有数据和传感器信息
+	 *
+	 * @param observation      数据流对应的观测结果，会将其datastream属性关联到该方法创建的数据流上
+	 * @param observedProperty 数据流对应的观测属性
+	 * @param sensor           传感器信息
+	 * @return 数据流对象
+	 */
+	public static Datastream create(Observation observation, ObservedProperty observedProperty, Sensor sensor) {
+		Datastream datastream = create(observation, observedProperty);
+		datastream.setSensor(sensor);
+		return datastream;
+	}
+
 }
