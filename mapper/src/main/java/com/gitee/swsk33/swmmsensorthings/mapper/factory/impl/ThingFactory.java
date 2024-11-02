@@ -2,6 +2,7 @@ package com.gitee.swsk33.swmmsensorthings.mapper.factory.impl;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.SensorThingsObjectFactory;
+import com.gitee.swsk33.swmmsensorthings.mapper.util.GeometryUtils;
 import com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils;
 import com.gitee.swsk33.swmmsensorthings.model.Location;
 import com.gitee.swsk33.swmmsensorthings.model.SensorThingsObject;
@@ -11,6 +12,8 @@ import io.github.swsk33.swmmjava.model.Node;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
 
 import java.util.Collections;
 
@@ -19,6 +22,11 @@ import java.util.Collections;
  */
 @Slf4j
 public class ThingFactory implements SensorThingsObjectFactory {
+
+	/**
+	 * 全部几何构造工厂
+	 */
+	private static final GeometryFactory geometryFactory = new GeometryFactory();
 
 	@Override
 	public SensorThingsObject createObject(VisualObject object) {
@@ -29,9 +37,19 @@ public class ThingFactory implements SensorThingsObjectFactory {
 		// 构造物品对象
 		Thing thing = new Thing();
 		thing.setName(object.getId());
-		// 设定位置
+		// 根据节点或者链接类型，设定其地理位置信息
 		Location location = new Location();
-		location.setLocation(new Coordinate(object.getCoordinate().getX(), object.getCoordinate().getY()));
+		if (Link.class.isAssignableFrom(object.getClass())) {
+			Link link = (Link) object;
+			// 链接类型的位置信息为一个线对象
+			Coordinate start = new Coordinate(link.getUpstream().getCoordinate().getX(), link.getUpstream().getCoordinate().getY());
+			Coordinate end = new Coordinate(link.getDownstream().getCoordinate().getX(), link.getDownstream().getCoordinate().getY());
+			LineString line = geometryFactory.createLineString(new Coordinate[]{start, end});
+			location.setLocation(GeometryUtils.geometryToGeoJSON(line));
+		} else {
+			// 节点类型的位置信息为一个点对象
+			location.setLocation(GeometryUtils.geometryToGeoJSON(geometryFactory.createPoint(new Coordinate(object.getCoordinate().getX(), object.getCoordinate().getY()))));
+		}
 		thing.setLocations(Collections.singletonList(location));
 		try {
 			// 追加属性

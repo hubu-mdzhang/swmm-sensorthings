@@ -2,6 +2,7 @@ package com.gitee.swsk33.swmmsensorthings.mapper.factory.impl;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.SensorThingsObjectFactory;
+import com.gitee.swsk33.swmmsensorthings.mapper.util.GeometryUtils;
 import com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils;
 import com.gitee.swsk33.swmmsensorthings.model.FeatureOfInterest;
 import com.gitee.swsk33.swmmsensorthings.model.SensorThingsObject;
@@ -46,7 +47,7 @@ public class FeatureOfInterestFactory implements SensorThingsObjectFactory {
 		LinearRing linearRing = geometryFactory.createLinearRing(coordinates);
 		// 创建多边形
 		Polygon polygon = geometryFactory.createPolygon(linearRing, null);
-		featureOfInterest.setFeature(polygon);
+		featureOfInterest.setFeature(GeometryUtils.geometryToGeoJSON(polygon));
 		try {
 			// 追加属性
 			JSONObject properties = PropertyReadUtils.readIntrinsicProperties(catchment);

@@ -22,6 +22,7 @@
 		<skipTests>true</skipTests>
 		<lombok.version>1.18.34</lombok.version>
 		<jts.version>1.20.0</jts.version>
+		<test.plugin.version>3.5.1</test.plugin.version>
 		<app.version>1.0.0</app.version>
 	</properties>
 
@@ -53,6 +54,13 @@
 				<version>2.0.16</version>
 			</dependency>
 
+			<!-- 日志实现 -->
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>1.5.8</version>
+			</dependency>
+
 			<!-- JTS工具 -->
 			<dependency>
 				<groupId>org.locationtech.jts</groupId>
@@ -74,14 +82,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>${test.plugin.version}</version>
 			</plugin>
 
 			<!-- Failsafe集成测试支持插件 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>${test.plugin.version}</version>
 				<executions>
 					<execution>
 						<goals>

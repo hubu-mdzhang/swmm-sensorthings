@@ -3,6 +3,7 @@ package com.gitee.swsk33.swmmsensorthings.model;
 import com.alibaba.fastjson2.JSONObject;
 import com.gitee.swsk33.swmmsensorthings.annotation.SensorThingsOptional;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
  * 数据流
  */
 @Data
+@ToString(callSuper = true)
 public class Datastream extends SensorThingsObject {
 
 	/**

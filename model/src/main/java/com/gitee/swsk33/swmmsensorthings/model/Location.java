@@ -3,6 +3,7 @@ package com.gitee.swsk33.swmmsensorthings.model;
 import com.alibaba.fastjson2.JSONObject;
 import com.gitee.swsk33.swmmsensorthings.annotation.SensorThingsOptional;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * 表示一个地点
  */
 @Data
+@ToString(callSuper = true)
 public class Location extends SensorThingsObject {
 
 	/**
@@ -18,9 +20,9 @@ public class Location extends SensorThingsObject {
 	private String encodingType;
 
 	/**
-	 * 地点经纬度或者范围
+	 * 地点经纬度或者范围，使用GeoJSON表示
 	 */
-	private Object location;
+	private JSONObject location;
 
 	/**
 	 * 附加属性

@@ -27,6 +27,7 @@ public class RainGageMapStrategy implements SensorDataStrategy {
 			JSONObject computedProperties = PropertyReadUtils.readComputedProperties(object);
 			for (String key : computedProperties.keySet()) {
 				Observation observation = new Observation();
+				observation.setName("The observation record of rain gage " + object.getId());
 				observation.setResultTime(time);
 				observation.setPhenomenonTime(time);
 				observation.setResult(computedProperties.get(key));

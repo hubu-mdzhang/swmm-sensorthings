@@ -11,12 +11,13 @@
 	<description>SWMM到SensorThings API模型映射层</description>
 
 	<dependencies>
-		<!-- 日志门面 -->
+		<!-- 日志实现 -->
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<optional>true</optional>
 		</dependency>
-		
+
 		<!-- SWMM-Java调用 -->
 		<dependency>
 			<groupId>io.github.swsk33</groupId>

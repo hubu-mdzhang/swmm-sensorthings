@@ -3,12 +3,13 @@ package com.gitee.swsk33.swmmsensorthings.model;
 import com.alibaba.fastjson2.JSONObject;
 import com.gitee.swsk33.swmmsensorthings.annotation.SensorThingsOptional;
 import lombok.Data;
-import org.locationtech.jts.geom.Geometry;
+import lombok.ToString;
 
 /**
  * 兴趣要素
  */
 @Data
+@ToString(callSuper = true)
 public class FeatureOfInterest extends SensorThingsObject {
 
 	/**
@@ -17,9 +18,9 @@ public class FeatureOfInterest extends SensorThingsObject {
 	private String encodingType;
 
 	/**
-	 * 要素，可以是一个多边形
+	 * 要素，使用GeoJSON表示
 	 */
-	private Geometry feature;
+	private JSONObject feature;
 
 	/**
 	 * 其它属性

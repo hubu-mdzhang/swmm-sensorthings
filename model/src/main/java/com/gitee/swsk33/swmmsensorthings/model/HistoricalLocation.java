@@ -1,6 +1,7 @@
 package com.gitee.swsk33.swmmsensorthings.model;
 
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
  * 历史地点
  */
 @Data
+@ToString(callSuper = true)
 public class HistoricalLocation extends SensorThingsObject {
 
 	/**
