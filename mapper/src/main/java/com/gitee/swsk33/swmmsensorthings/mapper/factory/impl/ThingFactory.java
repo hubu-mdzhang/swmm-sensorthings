@@ -46,9 +46,13 @@ public class ThingFactory implements SensorThingsObjectFactory {
 			Coordinate end = new Coordinate(link.getDownstream().getCoordinate().getX(), link.getDownstream().getCoordinate().getY());
 			LineString line = geometryFactory.createLineString(new Coordinate[]{start, end});
 			location.setLocation(GeometryUtils.geometryToGeoJSON(line));
+			// 补充描述
+			thing.setDescription("The Link " + link.getId() + " of SWMM.");
 		} else {
 			// 节点类型的位置信息为一个点对象
 			location.setLocation(GeometryUtils.geometryToGeoJSON(geometryFactory.createPoint(new Coordinate(object.getCoordinate().getX(), object.getCoordinate().getY()))));
+			// 补充描述
+			thing.setDescription("The Node " + object.getId() + " of SWMM.");
 		}
 		thing.setLocations(Collections.singletonList(location));
 		try {

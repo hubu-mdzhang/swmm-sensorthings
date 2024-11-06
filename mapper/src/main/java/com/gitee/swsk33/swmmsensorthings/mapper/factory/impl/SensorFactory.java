@@ -26,6 +26,9 @@ public class SensorFactory implements SensorThingsObjectFactory {
 		// 构造传感器对象
 		Sensor sensor = new Sensor();
 		sensor.setName(gage.getId());
+		sensor.setDescription("The Rain Gage of SWMM.");
+		sensor.setEncodingType("application/json");
+		sensor.setMetadata("");
 		try {
 			// 追加属性
 			JSONObject properties = PropertyReadUtils.readIntrinsicProperties(gage);

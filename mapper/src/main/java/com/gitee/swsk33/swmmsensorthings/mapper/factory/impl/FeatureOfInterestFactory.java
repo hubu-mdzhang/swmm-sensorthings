@@ -36,6 +36,7 @@ public class FeatureOfInterestFactory implements SensorThingsObjectFactory {
 		// 构造兴趣要素对象
 		FeatureOfInterest featureOfInterest = new FeatureOfInterest();
 		featureOfInterest.setName(catchment.getId());
+		featureOfInterest.setDescription("The Subcatchment of SWMM.");
 		featureOfInterest.setEncodingType("application/json");
 		// 创建多边形
 		Coordinate[] coordinates = new Coordinate[catchment.getPolygon().size() + 1];

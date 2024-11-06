@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 /**
  * 数据流
  */
+// TODO 模型映射可能存在问题：当Datastream表示降水数据时，那么Thing是什么？
+// TODO 当Datastream为子区域、实体计算属性时，那么Sensor是什么？
 @Data
 @ToString(callSuper = true)
 public class Datastream extends SensorThingsObject {
@@ -72,9 +74,12 @@ public class Datastream extends SensorThingsObject {
 	 */
 	public static Datastream create(Observation observation, ObservedProperty observedProperty) {
 		Datastream datastream = new Datastream();
+		// TODO 还需关联具体传感器，可考虑根据ObservedProperty生成
+		// TODO 还需关联具体实体
 		datastream.setName(observation.getName() + "datastream");
 		datastream.setDescription("The datastream of observation " + observation.getName());
 		datastream.setObservationType("");
+		// TODO 根据水文系统设定判断单位
 		datastream.setUnitOfMeasurement(new JSONObject());
 		datastream.setObservedProperty(observedProperty);
 		observation.setDatastream(datastream);
