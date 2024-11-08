@@ -35,7 +35,7 @@ public class SensorThingsMapperTests {
 		// 转换为Sensor
 		SensorThingsObjectFactory sensorFactory = ObjectFactoryBuilder.getObjectFactory(gages.getFirst());
 		assert sensorFactory != null;
-		log.info("传感器列表：");
+		log.info("具体传感器列表：");
 		gages.stream().map(sensorFactory::createObject).forEach(item -> {
 			System.out.println(JSON.toJSONString(item));
 		});
@@ -61,6 +61,17 @@ public class SensorThingsMapperTests {
 		SensorThingsObjectFactory nodeFactory = ObjectFactoryBuilder.getObjectFactory(nodes.getFirst());
 		assert nodeFactory != null;
 		nodes.stream().map(nodeFactory::createObject).forEach(item -> {
+			System.out.println(JSON.toJSONString(item));
+		});
+		// 虚拟传感器
+		log.info("虚拟传感器列表：");
+		catchments.stream().map(sensorFactory::createObject).forEach(item -> {
+			System.out.println(JSON.toJSONString(item));
+		});
+		links.stream().map(sensorFactory::createObject).forEach(item -> {
+			System.out.println(JSON.toJSONString(item));
+		});
+		nodes.stream().map(sensorFactory::createObject).forEach(item -> {
 			System.out.println(JSON.toJSONString(item));
 		});
 	}

@@ -40,7 +40,9 @@ public class GeometryUtils {
 	 * @return JSONObject对象
 	 */
 	public static JSONObject geometryToGeoJSON(Geometry geometry) {
-		return JSON.parseObject(GEO_JSON_WRITER.write(geometry));
+		JSONObject geometryJson = JSON.parseObject(GEO_JSON_WRITER.write(geometry));
+		geometryJson.remove("crs");
+		return geometryJson;
 	}
 
 	/**

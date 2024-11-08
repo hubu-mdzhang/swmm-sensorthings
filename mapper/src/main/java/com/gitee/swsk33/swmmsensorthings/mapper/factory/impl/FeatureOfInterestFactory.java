@@ -1,9 +1,7 @@
 package com.gitee.swsk33.swmmsensorthings.mapper.factory.impl;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.SensorThingsObjectFactory;
-import com.gitee.swsk33.swmmsensorthings.mapper.util.GeometryUtils;
-import com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils;
+import com.gitee.swsk33.swmmsensorthings.mapper.param.EncodingType;
 import com.gitee.swsk33.swmmsensorthings.model.FeatureOfInterest;
 import com.gitee.swsk33.swmmsensorthings.model.SensorThingsObject;
 import io.github.swsk33.swmmjava.model.Subcatchment;
@@ -13,6 +11,12 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygon;
+
+import java.util.Collections;
+import java.util.List;
+
+import static com.gitee.swsk33.swmmsensorthings.mapper.util.GeometryUtils.geometryToGeoJSON;
+import static com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils.readIntrinsicProperties;
 
 /**
  * 将子汇水区域转换为兴趣要素的具体工厂方法
@@ -26,18 +30,19 @@ public class FeatureOfInterestFactory implements SensorThingsObjectFactory {
 	private static final GeometryFactory geometryFactory = new GeometryFactory();
 
 	@Override
-	public SensorThingsObject createObject(VisualObject object) {
+	public List<SensorThingsObject> createObject(VisualObject object) {
 		if (object == null || !Subcatchment.class.isAssignableFrom(object.getClass())) {
 			log.error("传入对象为空，或者类型不正确！需要类型：{}", Subcatchment.class.getName());
 			return null;
 		}
+		// FeatureOfInterest仅从Subcatchment创建，为一对一关系
 		// 原始子汇水区域对象
 		Subcatchment catchment = (Subcatchment) object;
 		// 构造兴趣要素对象
 		FeatureOfInterest featureOfInterest = new FeatureOfInterest();
 		featureOfInterest.setName(catchment.getId());
-		featureOfInterest.setDescription("The Subcatchment of SWMM.");
-		featureOfInterest.setEncodingType("application/json");
+		featureOfInterest.setDescription("The feature of interest about subcatchment " + catchment.getId() + " in SWMM System.");
+		featureOfInterest.setEncodingType(EncodingType.GEO_JSON);
 		// 创建多边形
 		Coordinate[] coordinates = new Coordinate[catchment.getPolygon().size() + 1];
 		for (int i = 0; i < catchment.getPolygon().size(); i++) {
@@ -47,17 +52,16 @@ public class FeatureOfInterestFactory implements SensorThingsObjectFactory {
 		// 创建线串
 		LinearRing linearRing = geometryFactory.createLinearRing(coordinates);
 		// 创建多边形
-		Polygon polygon = geometryFactory.createPolygon(linearRing, null);
-		featureOfInterest.setFeature(GeometryUtils.geometryToGeoJSON(polygon));
+		Polygon polygon = geometryFactory.createPolygon(linearRing);
+		featureOfInterest.setFeature(geometryToGeoJSON(polygon));
 		try {
 			// 追加属性
-			JSONObject properties = PropertyReadUtils.readIntrinsicProperties(catchment);
-			featureOfInterest.setProperties(properties);
+			featureOfInterest.setProperties(readIntrinsicProperties(catchment));
 		} catch (Exception e) {
 			log.error("读取固有属性时发生错误！");
 			log.error(e.getMessage());
 		}
-		return featureOfInterest;
+		return Collections.singletonList(featureOfInterest);
 	}
 
 }
