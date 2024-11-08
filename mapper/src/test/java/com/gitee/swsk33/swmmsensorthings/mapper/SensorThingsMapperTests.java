@@ -1,16 +1,19 @@
 package com.gitee.swsk33.swmmsensorthings.mapper;
 
 import com.alibaba.fastjson2.JSON;
+import com.gitee.swsk33.swmmsensorthings.mapper.factory.SensorDataFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.SensorThingsObjectFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.builder.ObjectFactoryBuilder;
-import com.gitee.swsk33.swmmsensorthings.mapper.subscriber.NodeSubscriber;
-import com.gitee.swsk33.swmmsensorthings.mapper.subscriber.RainGageSubscriber;
+import com.gitee.swsk33.swmmsensorthings.model.Observation;
 import io.github.swsk33.swmmjava.SWMM;
 import io.github.swsk33.swmmjava.model.VisualObject;
+import io.github.swsk33.swmmjava.model.event.VisualObjectEvent;
 import io.github.swsk33.swmmjava.param.ObjectTypeCode;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.reactivestreams.Subscription;
+import reactor.core.publisher.BaseSubscriber;
 
 import java.util.List;
 
@@ -77,10 +80,100 @@ public class SensorThingsMapperTests {
 	}
 
 	@Test
-	@DisplayName("测试数据流订阅映射")
-	void testDataMapping() {
-		swmm.subscribe(ObjectTypeCode.GAGE, new RainGageSubscriber());
-		swmm.subscribe(ObjectTypeCode.NODE, new NodeSubscriber());
+	@DisplayName("测试雨量计数据流订阅映射")
+	void testRainGageMapping() {
+		swmm.subscribe(ObjectTypeCode.GAGE, new BaseSubscriber<VisualObjectEvent>() {
+			@Override
+			protected void hookOnSubscribe(Subscription subscription) {
+				log.info("开始订阅雨量计类型数据！");
+				request(1);
+			}
+
+			@Override
+			protected void hookOnNext(VisualObjectEvent event) {
+				List<Observation> observations = SensorDataFactory.createObservations(event.getData(), event.getComputedTime());
+				observations.forEach(observation -> {
+					System.out.println(JSON.toJSONString(observation));
+				});
+				// 继续订阅
+				request(1);
+			}
+		});
+		while (swmm.step() != 0) {
+			// ...
+		}
+	}
+
+	@Test
+	@DisplayName("测试子汇水区域数据流订阅映射")
+	void testSubcatchmentDataMapping() {
+		swmm.subscribe(ObjectTypeCode.SUB_CATCHMENT, new BaseSubscriber<>() {
+			@Override
+			protected void hookOnSubscribe(Subscription subscription) {
+				log.info("开始订阅子汇水区域类型数据！");
+				request(1);
+			}
+
+			@Override
+			protected void hookOnNext(VisualObjectEvent event) {
+				List<Observation> observations = SensorDataFactory.createObservations(event.getData(), event.getComputedTime());
+				observations.forEach(observation -> {
+					System.out.println(JSON.toJSONString(observation));
+				});
+				// 继续订阅
+				request(1);
+			}
+		});
+		while (swmm.step() != 0) {
+			// ...
+		}
+	}
+
+	@Test
+	@DisplayName("测试节点类型数据流订阅映射")
+	void testNodeDataMapping() {
+		swmm.subscribe(ObjectTypeCode.NODE, new BaseSubscriber<>() {
+			@Override
+			protected void hookOnSubscribe(Subscription subscription) {
+				log.info("开始订阅节点类型数据！");
+				request(1);
+			}
+
+			@Override
+			protected void hookOnNext(VisualObjectEvent event) {
+				List<Observation> observations = SensorDataFactory.createObservations(event.getData(), event.getComputedTime());
+				observations.forEach(observation -> {
+					System.out.println(JSON.toJSONString(observation));
+				});
+				// 继续订阅
+				request(1);
+			}
+		});
+		while (swmm.step() != 0) {
+			// ...
+		}
+	}
+
+	@Test
+	@DisplayName("测试链接类型数据流订阅映射")
+	void testLinkDataMapping() {
+		swmm.subscribe(ObjectTypeCode.LINK, new BaseSubscriber<>() {
+			@Override
+			protected void hookOnSubscribe(Subscription subscription) {
+				log.info("开始链接类型数据！");
+				request(1);
+			}
+
+			@Override
+			protected void hookOnNext(VisualObjectEvent event) {
+				List<Observation> observations = SensorDataFactory.createObservations(event.getData(), event.getComputedTime());
+				observations.forEach(observation -> {
+					System.out.println(JSON.toJSONString(observation));
+				});
+				// 继续订阅
+				request(1);
+			}
+		});
 		while (swmm.step() != 0) {
 			// ...
 		}

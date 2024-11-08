@@ -8,8 +8,8 @@ import io.github.swsk33.swmmjava.model.Subcatchment;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils.readComputedProperties;
 
@@ -20,8 +20,8 @@ import static com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils.re
 public class SubcatchmentToSensorStrategy implements SensorCreateStrategy {
 
 	@Override
-	public List<Sensor> createSensors(VisualObject object) {
-		List<Sensor> virtualSensors = new ArrayList<>();
+	public Map<String, Sensor> createSensors(VisualObject object) {
+		Map<String, Sensor> virtualSensors = new HashMap<>();
 		// 读取计算属性
 		try {
 			JSONObject computedProperties = readComputedProperties(object);
@@ -33,7 +33,7 @@ public class SubcatchmentToSensorStrategy implements SensorCreateStrategy {
 				sensor.setDescription("The virtual sensor of the subcatchment " + object.getId() + ", which observes the " + key + " property");
 				sensor.setMetadata(Subcatchment.class.getSimpleName() + "." + key);
 				sensor.setEncodingType(EncodingType.JSON);
-				virtualSensors.add(sensor);
+				virtualSensors.put(key, sensor);
 			}
 		} catch (Exception e) {
 			log.error("读取子汇水区域计算属性出错！");

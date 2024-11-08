@@ -3,7 +3,7 @@ package com.gitee.swsk33.swmmsensorthings.mapper.strategy;
 import com.gitee.swsk33.swmmsensorthings.model.Sensor;
 import io.github.swsk33.swmmjava.model.VisualObject;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * 从SWMM对象创建传感器或者虚拟传感器的抽象策略
@@ -18,8 +18,12 @@ public interface SensorCreateStrategy {
 	 * </ul>
 	 *
 	 * @param object 原始SWMM对象
-	 * @return 构造后的Sensor传感器列表
+	 * @return 构造后的Sensor传感器列表，其中：
+	 * <ul>
+	 *     <li>键：表示传感器观测的SWMM可视对象属性名称</li>
+	 *     <li>值：对应的传感器对象</li>
+	 * </ul>
 	 */
-	List<Sensor> createSensors(VisualObject object);
+	Map<String, Sensor> createSensors(VisualObject object);
 
 }

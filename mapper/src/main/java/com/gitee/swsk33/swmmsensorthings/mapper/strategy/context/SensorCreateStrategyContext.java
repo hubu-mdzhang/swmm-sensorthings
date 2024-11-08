@@ -10,7 +10,6 @@ import io.github.swsk33.swmmjava.model.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,9 +35,9 @@ public class SensorCreateStrategyContext {
 	 * 调用不同策略，创建对应的传感器
 	 *
 	 * @param object 传入SWMM可视对象
-	 * @return 转换后的传感器对象列表，出现错误返回null
+	 * @return 转换后的传感器对象散列表，出现错误返回null
 	 */
-	public static List<Sensor> doCreateSensors(VisualObject object) {
+	public static Map<String, Sensor> doCreateSensors(VisualObject object) {
 		if (object == null) {
 			log.error("传入对象为空！");
 			return null;

@@ -23,7 +23,7 @@ public class SensorFactory implements SensorThingsObjectFactory {
 		}
 		// Sensor可以由全部SWMM对象创建，可能是基于观测属性的虚拟Sensor，也可以是具体意义的Sensor
 		// 调用Sensor策略模式创建
-		return Objects.requireNonNull(SensorCreateStrategyContext.doCreateSensors(object)).stream().map(item -> (SensorThingsObject) item).toList();
+		return Objects.requireNonNull(Objects.requireNonNull(SensorCreateStrategyContext.doCreateSensors(object)).values()).stream().map(item -> (SensorThingsObject) item).toList();
 	}
 
 }
