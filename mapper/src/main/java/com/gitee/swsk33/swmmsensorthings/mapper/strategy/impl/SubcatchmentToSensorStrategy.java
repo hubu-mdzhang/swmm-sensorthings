@@ -1,17 +1,11 @@
 package com.gitee.swsk33.swmmsensorthings.mapper.strategy.impl;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.gitee.swsk33.swmmsensorthings.mapper.param.EncodingType;
 import com.gitee.swsk33.swmmsensorthings.mapper.strategy.SensorCreateStrategy;
 import com.gitee.swsk33.swmmsensorthings.model.Sensor;
 import io.github.swsk33.swmmjava.model.Subcatchment;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils.readComputedProperties;
 
 /**
  * 将子汇水区域的计算属性映射成虚拟传感器的具体策略
@@ -20,26 +14,14 @@ import static com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils.re
 public class SubcatchmentToSensorStrategy implements SensorCreateStrategy {
 
 	@Override
-	public Map<String, Sensor> createSensors(VisualObject object) {
-		Map<String, Sensor> virtualSensors = new HashMap<>();
-		// 读取计算属性
-		try {
-			JSONObject computedProperties = readComputedProperties(object);
-			// 提取名字
-			for (String key : computedProperties.keySet()) {
-				// 创建为虚拟传感器
-				Sensor sensor = new Sensor();
-				sensor.setName(object.getId() + "_" + key);
-				sensor.setDescription("The virtual sensor of the subcatchment " + object.getId() + ", which observes the " + key + " property");
-				sensor.setMetadata(Subcatchment.class.getSimpleName() + "." + key);
-				sensor.setEncodingType(EncodingType.JSON);
-				virtualSensors.put(key, sensor);
-			}
-		} catch (Exception e) {
-			log.error("读取子汇水区域计算属性出错！");
-			log.error(e.getMessage());
-		}
-		return virtualSensors;
+	public Sensor createSensor(VisualObject object) {
+		// 创建为虚拟传感器
+		Sensor sensor = new Sensor();
+		sensor.setName(object.getId() + " Sensor");
+		sensor.setDescription("The virtual sensor of the subcatchment " + object.getId() + ".");
+		sensor.setMetadata(Subcatchment.class.getSimpleName());
+		sensor.setEncodingType(EncodingType.JSON);
+		return sensor;
 	}
 
 }

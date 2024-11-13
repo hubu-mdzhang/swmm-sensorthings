@@ -12,9 +12,6 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygon;
 
-import java.util.Collections;
-import java.util.List;
-
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.GeometryUtils.geometryToGeoJSON;
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils.readIntrinsicProperties;
 
@@ -30,7 +27,7 @@ public class FeatureOfInterestFactory implements SensorThingsObjectFactory {
 	private static final GeometryFactory geometryFactory = new GeometryFactory();
 
 	@Override
-	public List<SensorThingsObject> createObject(VisualObject object) {
+	public SensorThingsObject createObject(VisualObject object) {
 		if (object == null || !Subcatchment.class.isAssignableFrom(object.getClass())) {
 			log.error("传入对象为空，或者类型不正确！需要类型：{}", Subcatchment.class.getName());
 			return null;
@@ -61,7 +58,7 @@ public class FeatureOfInterestFactory implements SensorThingsObjectFactory {
 			log.error("读取固有属性时发生错误！");
 			log.error(e.getMessage());
 		}
-		return Collections.singletonList(featureOfInterest);
+		return featureOfInterest;
 	}
 
 }

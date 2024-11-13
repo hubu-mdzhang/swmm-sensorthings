@@ -7,6 +7,7 @@ import io.github.swsk33.swmmjava.model.VisualObject;
 import io.github.swsk33.swmmjava.util.ReflectUtils;
 
 import java.lang.reflect.Field;
+import java.util.Set;
 
 /**
  * 用于读取SWMM可视对象的属性信息以及值的实用类
@@ -49,6 +50,27 @@ public class PropertyReadUtils {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * 根据注解，获取SWMM可视对象的计算属性的名称列表
+	 *
+	 * @param object 要读取的可视对象
+	 * @return 该可视对象全部的计算属性名称列表
+	 */
+	public static Set<String> getComputedPropertyNames(VisualObject object) throws Exception {
+		return readComputedProperties(object).keySet();
+	}
+
+	/**
+	 * 根据注解，获取SWMM可视对象的指定名称的计算属性的值
+	 *
+	 * @param object 要读取的可视对象
+	 * @param name   计算属性名称
+	 * @return 该可视对象对应名称的计算属性的值
+	 */
+	public static Object getComputedPropertyValue(VisualObject object, String name) throws Exception {
+		return readComputedProperties(object).get(name);
 	}
 
 }

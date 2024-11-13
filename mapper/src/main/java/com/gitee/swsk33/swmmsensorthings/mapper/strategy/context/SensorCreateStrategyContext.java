@@ -37,21 +37,21 @@ public class SensorCreateStrategyContext {
 	 * @param object 传入SWMM可视对象
 	 * @return 转换后的传感器对象散列表，出现错误返回null
 	 */
-	public static Map<String, Sensor> doCreateSensors(VisualObject object) {
+	public static Sensor doCreateSensor(VisualObject object) {
 		if (object == null) {
 			log.error("传入对象为空！");
 			return null;
 		}
 		// 类型存在则直接获取策略
 		if (STRATEGY_MAP.containsKey(object.getClass())) {
-			return STRATEGY_MAP.get(object.getClass()).createSensors(object);
+			return STRATEGY_MAP.get(object.getClass()).createSensor(object);
 		}
 		// 否则，判断是否是Link或者Node子类
 		if (Link.class.isAssignableFrom(object.getClass())) {
-			return STRATEGY_MAP.get(Link.class).createSensors(object);
+			return STRATEGY_MAP.get(Link.class).createSensor(object);
 		}
 		if (Node.class.isAssignableFrom(object.getClass())) {
-			return STRATEGY_MAP.get(Node.class).createSensors(object);
+			return STRATEGY_MAP.get(Node.class).createSensor(object);
 		}
 		log.error("不存在对应的传感器映射策略！传入对象类型：{}", object.getClass());
 		return null;

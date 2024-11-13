@@ -9,9 +9,6 @@ import io.github.swsk33.swmmjava.model.Subcatchment;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  * 将节点/链接转换成物体的具体工厂方法
  */
@@ -19,14 +16,14 @@ import java.util.List;
 public class ThingFactory implements SensorThingsObjectFactory {
 
 	@Override
-	public List<SensorThingsObject> createObject(VisualObject object) {
+	public SensorThingsObject createObject(VisualObject object) {
 		if (object == null || (!Subcatchment.class.isAssignableFrom(object.getClass()) && !Node.class.isAssignableFrom(object.getClass()) && !Link.class.isAssignableFrom(object.getClass()))) {
 			log.error("传入对象为空或类型不正确！需要：{}或者{}", Node.class.getName(), Link.class.getName());
 			return null;
 		}
 		// Thing可以由除了RainGage之外的任何对象创建
 		// 调用策略模式
-		return Collections.singletonList(ThingCreateStrategyContext.doCreateThing(object));
+		return ThingCreateStrategyContext.doCreateThing(object);
 	}
 
 }

@@ -7,8 +7,6 @@ import io.github.swsk33.swmmjava.model.RainGage;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Map;
-
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils.readIntrinsicProperties;
 
 /**
@@ -18,7 +16,7 @@ import static com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils.re
 public class GageToSensorStrategy implements SensorCreateStrategy {
 
 	@Override
-	public Map<String, Sensor> createSensors(VisualObject object) {
+	public Sensor createSensor(VisualObject object) {
 		RainGage rainGage = (RainGage) object;
 		// 创建Sensor
 		Sensor sensor = new Sensor();
@@ -33,7 +31,7 @@ public class GageToSensorStrategy implements SensorCreateStrategy {
 			log.error("读取雨量计对象固有属性出错！");
 			log.error(e.getMessage());
 		}
-		return Map.of("rainfall", sensor);
+		return sensor;
 	}
 
 }
