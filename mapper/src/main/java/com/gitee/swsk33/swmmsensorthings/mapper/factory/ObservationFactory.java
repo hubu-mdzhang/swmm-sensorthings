@@ -1,6 +1,6 @@
 package com.gitee.swsk33.swmmsensorthings.mapper.factory;
 
-import com.gitee.swsk33.swmmsensorthings.mapper.factory.builder.ObjectFactoryBuilder;
+import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.FeatureOfInterestFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils;
 import com.gitee.swsk33.swmmsensorthings.model.Datastream;
 import com.gitee.swsk33.swmmsensorthings.model.FeatureOfInterest;
@@ -10,7 +10,6 @@ import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * 创建观测数据的简单工厂
@@ -30,7 +29,7 @@ public class ObservationFactory {
 	public static Observation createObservation(VisualObject object, String name, LocalDateTime time) {
 		// 如果是子汇水区域类型，则同时创建数据流与兴趣要素
 		if (Subcatchment.class.isAssignableFrom(object.getClass())) {
-			return createObservation(object, name, DatastreamFactory.createDatastream(object, name), (FeatureOfInterest) Objects.requireNonNull(ObjectFactoryBuilder.getObjectFactory(object)).createObject(object), time);
+			return createObservation(object, name, DatastreamFactory.createDatastream(object, name), (FeatureOfInterest) FeatureOfInterestFactory.getInstance().createObject(object), time);
 		}
 		// 否则，仅创建数据流并关联
 		return createObservation(object, name, DatastreamFactory.createDatastream(object, name), time);

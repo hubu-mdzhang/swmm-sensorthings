@@ -1,18 +1,25 @@
 package com.gitee.swsk33.swmmsensorthings.mapper.factory;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.SensorFactory;
+import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.ThingFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.strategy.context.SensorCreateStrategyContext;
 import com.gitee.swsk33.swmmsensorthings.mapper.strategy.context.ThingCreateStrategyContext;
 import com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils;
-import com.gitee.swsk33.swmmsensorthings.model.Datastream;
-import com.gitee.swsk33.swmmsensorthings.model.ObservedProperty;
-import com.gitee.swsk33.swmmsensorthings.model.Sensor;
-import com.gitee.swsk33.swmmsensorthings.model.Thing;
+import com.gitee.swsk33.swmmsensorthings.model.*;
 import io.github.swsk33.swmmjava.model.RainGage;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import static com.gitee.swsk33.swmmsensorthings.mapper.param.EncodingType.GEO_JSON;
+import static com.gitee.swsk33.swmmsensorthings.mapper.util.GeometryUtils.geometryToGeoJSON;
 
 /**
  * 创建数据流对象的简单工厂
@@ -21,8 +28,32 @@ import java.util.*;
 public class DatastreamFactory {
 
 	/**
+	 * 几何工厂对象
+	 */
+	private static final GeometryFactory geometryFactory = new GeometryFactory();
+
+	/**
+	 * 为雨量计对象创建占位符Thing
+	 *
+	 * @param object 雨量计对象
+	 * @return 占位符作用的Thing
+	 */
+	private static Thing createPlaceholderThing(VisualObject object) {
+		Thing placeholderThing = new Thing();
+		placeholderThing.setName("RainGage Placeholder for " + object.getId());
+		placeholderThing.setDescription("The thing which is a placeholder about the rain gage " + object.getId() + ".");
+		Location location = new Location();
+		location.setName("Placeholder Location for " + object.getId());
+		location.setDescription("The location which is a placeholder about the rain gage " + object.getId() + ".");
+		location.setEncodingType(GEO_JSON);
+		location.setLocation(geometryToGeoJSON(geometryFactory.createPoint(new Coordinate(object.getCoordinate().getX(), object.getCoordinate().getY()))));
+		placeholderThing.setLocations(Collections.singletonList(location));
+		return placeholderThing;
+	}
+
+	/**
 	 * 根据给定的SWMM可视对象以及指定的属性，创建一个关于该计算属性的数据流对象，将会同时创建并关联对应的观测属性，并创建Sensor和Thing进行关联<br>
-	 * 若object为RainGage类型，则不会创建Thing，需要后续手动关联其对应的Subcatchment代表的Thing
+	 * 若object为RainGage类型，则会创建一个无意义的占位符Thing，可后续手动关联其对应的Subcatchment代表的Thing
 	 *
 	 * @param object SWMM可视对象
 	 * @param name   可视对象的计算属性名称
@@ -31,7 +62,7 @@ public class DatastreamFactory {
 	public static Datastream createDatastream(VisualObject object, String name) {
 		// 如果是雨量计，则仅创建为Sensor
 		if (RainGage.class.isAssignableFrom(object.getClass())) {
-			return createDatastream(object, name, SensorCreateStrategyContext.doCreateSensor(object), null);
+			return createDatastream(object, name, SensorCreateStrategyContext.doCreateSensor(object), createPlaceholderThing(object));
 		}
 		// 否则，创建为Sensor和Thing
 		return createDatastream(object, name, SensorCreateStrategyContext.doCreateSensor(object), ThingCreateStrategyContext.doCreateThing(object));
@@ -66,9 +97,9 @@ public class DatastreamFactory {
 	}
 
 	/**
-	 * 根据可视对象的计算属性，对其所有计算属性创建对应的数据流对象，此外，还会同时根据可视对象创建对应的Thing和Sensor对象，具体：
+	 * 根据可视对象的计算属性，对其所有计算属性创建对应的数据流对象，此外，还会同时根据可视对象创建对应的Thing和Sensor对象，具体来说：
 	 * <ul>
-	 *     <li>若传入RainGage，则在创建数据流的同时还会创建为具体Sensor并关联，但是不会创建为Thing，需要后续指定这个数据流中，该RainGage对应的Subcatchment代表的Thing</li>
+	 *     <li>若传入RainGage，则在创建数据流的同时还会创建为具体Sensor并关联，并且会创建一个无意义的占位符Thing，可在后续指定这个数据流中该RainGage对应的Subcatchment代表的Thing</li>
 	 *     <li>若传入Subcatchment、Link和Node，则在创建数据流的同时还会创建虚拟Sensor与Thing并进行关联</li>
 	 * </ul>
 	 *
@@ -78,10 +109,10 @@ public class DatastreamFactory {
 	public static List<Datastream> createDatastreamList(VisualObject object) {
 		// 如果是雨量计，则仅创建为Sensor
 		if (RainGage.class.isAssignableFrom(object.getClass())) {
-			return createDatastreamList(object, SensorCreateStrategyContext.doCreateSensor(object), null);
+			return createDatastreamList(object, (Sensor) SensorFactory.getInstance().createObject(object), createPlaceholderThing(object));
 		}
 		// 否则，创建为Sensor和Thing
-		return createDatastreamList(object, SensorCreateStrategyContext.doCreateSensor(object), ThingCreateStrategyContext.doCreateThing(object));
+		return createDatastreamList(object, (Sensor) SensorFactory.getInstance().createObject(object), (Thing) ThingFactory.getInstance().createObject(object));
 	}
 
 	/**

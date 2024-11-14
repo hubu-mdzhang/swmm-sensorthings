@@ -2,8 +2,9 @@ package com.gitee.swsk33.swmmsensorthings.mapper;
 
 import com.alibaba.fastjson2.JSON;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.ObservationFactory;
-import com.gitee.swsk33.swmmsensorthings.mapper.factory.SensorThingsObjectFactory;
-import com.gitee.swsk33.swmmsensorthings.mapper.factory.builder.ObjectFactoryBuilder;
+import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.FeatureOfInterestFactory;
+import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.SensorFactory;
+import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.ThingFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils;
 import io.github.swsk33.swmmjava.SWMM;
 import io.github.swsk33.swmmjava.model.VisualObject;
@@ -71,45 +72,37 @@ public class SensorThingsMapperTests {
 		// 雨量计
 		List<VisualObject> gages = swmm.getObjectList(GAGE);
 		// 转换为Sensor
-		SensorThingsObjectFactory sensorFactory = ObjectFactoryBuilder.getObjectFactory(gages.getFirst());
-		assert sensorFactory != null;
 		log.info("具体传感器列表：");
-		gages.stream().map(sensorFactory::createObject).forEach(item -> {
+		gages.stream().map(SensorFactory.getInstance()::createObject).forEach(item -> {
 			System.out.println(JSON.toJSONString(item));
 		});
 		// 子汇水区域
 		List<VisualObject> catchments = swmm.getObjectList(ObjectTypeCode.SUB_CATCHMENT);
 		// 转换为FeatureOfInterest
-		SensorThingsObjectFactory catchmentFactory = ObjectFactoryBuilder.getObjectFactory(catchments.getFirst());
-		assert catchmentFactory != null;
 		log.info("兴趣要素列表：");
-		catchments.stream().map(catchmentFactory::createObject).forEach(item -> {
+		catchments.stream().map(FeatureOfInterestFactory.getInstance()::createObject).forEach(item -> {
 			System.out.println(JSON.toJSONString(item));
 		});
 		// 链接
 		List<VisualObject> links = swmm.getObjectList(ObjectTypeCode.LINK);
-		SensorThingsObjectFactory linkFactory = ObjectFactoryBuilder.getObjectFactory(links.getFirst());
-		assert linkFactory != null;
 		log.info("物品列表：");
-		links.stream().map(linkFactory::createObject).forEach(item -> {
+		links.stream().map(ThingFactory.getInstance()::createObject).forEach(item -> {
 			System.out.println(JSON.toJSONString(item));
 		});
 		// 节点
 		List<VisualObject> nodes = swmm.getObjectList(ObjectTypeCode.NODE);
-		SensorThingsObjectFactory nodeFactory = ObjectFactoryBuilder.getObjectFactory(nodes.getFirst());
-		assert nodeFactory != null;
-		nodes.stream().map(nodeFactory::createObject).forEach(item -> {
+		nodes.stream().map(ThingFactory.getInstance()::createObject).forEach(item -> {
 			System.out.println(JSON.toJSONString(item));
 		});
 		// 虚拟传感器
 		log.info("虚拟传感器列表：");
-		catchments.stream().map(sensorFactory::createObject).forEach(item -> {
+		catchments.stream().map(SensorFactory.getInstance()::createObject).forEach(item -> {
 			System.out.println(JSON.toJSONString(item));
 		});
-		links.stream().map(sensorFactory::createObject).forEach(item -> {
+		links.stream().map(SensorFactory.getInstance()::createObject).forEach(item -> {
 			System.out.println(JSON.toJSONString(item));
 		});
-		nodes.stream().map(sensorFactory::createObject).forEach(item -> {
+		nodes.stream().map(SensorFactory.getInstance()::createObject).forEach(item -> {
 			System.out.println(JSON.toJSONString(item));
 		});
 	}

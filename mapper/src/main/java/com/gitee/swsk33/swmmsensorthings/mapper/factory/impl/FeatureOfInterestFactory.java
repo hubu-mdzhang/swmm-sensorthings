@@ -16,7 +16,7 @@ import static com.gitee.swsk33.swmmsensorthings.mapper.util.GeometryUtils.geomet
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils.readIntrinsicProperties;
 
 /**
- * 将子汇水区域转换为兴趣要素的具体工厂方法
+ * 将SWMM对象转换为兴趣要素的具体工厂方法
  */
 @Slf4j
 public class FeatureOfInterestFactory implements SensorThingsObjectFactory {
@@ -25,6 +25,34 @@ public class FeatureOfInterestFactory implements SensorThingsObjectFactory {
 	 * 几何图形工厂对象
 	 */
 	private static final GeometryFactory geometryFactory = new GeometryFactory();
+
+	/**
+	 * 唯一单例
+	 */
+	private static volatile SensorThingsObjectFactory INSTANCE;
+
+	/**
+	 * 单例模式
+	 */
+	private FeatureOfInterestFactory() {
+
+	}
+
+	/**
+	 * 获取兴趣要素工厂唯一单例
+	 *
+	 * @return 兴趣要素工厂单例
+	 */
+	public static SensorThingsObjectFactory getInstance() {
+		if (INSTANCE == null) {
+			synchronized (FeatureOfInterestFactory.class) {
+				if (INSTANCE == null) {
+					INSTANCE = new FeatureOfInterestFactory();
+				}
+			}
+		}
+		return INSTANCE;
+	}
 
 	@Override
 	public SensorThingsObject createObject(VisualObject object) {

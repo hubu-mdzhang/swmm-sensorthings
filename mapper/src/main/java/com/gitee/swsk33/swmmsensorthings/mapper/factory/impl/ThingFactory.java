@@ -10,10 +10,38 @@ import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 将节点/链接转换成物体的具体工厂方法
+ * 将SWMM对象转换成物体的具体工厂方法
  */
 @Slf4j
 public class ThingFactory implements SensorThingsObjectFactory {
+
+	/**
+	 * 实体工厂唯一单例
+	 */
+	private static volatile SensorThingsObjectFactory INSTANCE;
+
+	/**
+	 * 单例模式
+	 */
+	private ThingFactory() {
+
+	}
+
+	/**
+	 * 获取实体工厂唯一单例
+	 *
+	 * @return 实体工厂单例
+	 */
+	public static SensorThingsObjectFactory getInstance() {
+		if (INSTANCE == null) {
+			synchronized (ThingFactory.class) {
+				if (INSTANCE == null) {
+					INSTANCE = new ThingFactory();
+				}
+			}
+		}
+		return INSTANCE;
+	}
 
 	@Override
 	public SensorThingsObject createObject(VisualObject object) {
