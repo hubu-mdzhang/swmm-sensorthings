@@ -1,6 +1,7 @@
 package com.gitee.swsk33.swmmsensorthings.model;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.gitee.swsk33.swmmsensorthings.annotation.SensorThingsOptional;
 import lombok.Data;
 import lombok.ToString;
@@ -50,11 +51,13 @@ public class Observation extends SensorThingsObject {
 	/**
 	 * 位于的数据流
 	 */
+	@JSONField(name = "Datastream")
 	private Datastream datastream;
 
 	/**
 	 * 对应的兴趣要素
 	 */
+	@JSONField(name = "FeatureOfInterest")
 	private FeatureOfInterest featureOfInterest;
 
 }

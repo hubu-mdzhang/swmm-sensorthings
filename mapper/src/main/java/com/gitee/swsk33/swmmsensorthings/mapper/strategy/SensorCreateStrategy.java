@@ -14,6 +14,7 @@ public interface SensorCreateStrategy {
 	 *     <li>RainGage将创建为一个单独的具体传感器</li>
 	 *     <li>其余对象将创建为一个虚拟传感器</li>
 	 * </ul>
+	 * 可通过properties中的virtual属性判断是否是虚拟传感器
 	 *
 	 * @param object 原始SWMM对象
 	 * @return 构造后的Sensor传感器对象

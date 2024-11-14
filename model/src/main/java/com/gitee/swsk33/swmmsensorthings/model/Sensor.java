@@ -1,9 +1,12 @@
 package com.gitee.swsk33.swmmsensorthings.model;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.gitee.swsk33.swmmsensorthings.annotation.SensorThingsOptional;
 import lombok.Data;
 import lombok.ToString;
+
+import java.util.List;
 
 /**
  * 传感器
@@ -27,5 +30,11 @@ public class Sensor extends SensorThingsObject {
 	 */
 	@SensorThingsOptional
 	private JSONObject properties;
+
+	/**
+	 * 该传感器对应的数据流列表
+	 */
+	@JSONField(name = "Datastreams")
+	private List<Datastream> datastreams;
 
 }

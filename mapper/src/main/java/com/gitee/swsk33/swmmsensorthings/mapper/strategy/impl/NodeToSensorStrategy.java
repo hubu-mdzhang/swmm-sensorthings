@@ -17,13 +17,14 @@ public class NodeToSensorStrategy implements SensorCreateStrategy {
 	public Sensor createSensor(VisualObject object) {
 		// 创建为虚拟传感器
 		Sensor sensor = new Sensor();
-		sensor.setName(object.getId() + " Node Sensor");
+		sensor.setName(object.getId());
 		sensor.setDescription("The virtual sensor of the node " + object.getId() + ".");
 		sensor.setMetadata(object.getClass().getSimpleName());
 		sensor.setEncodingType(EncodingType.JSON);
 		// 设定附加属性
 		JSONObject properties = new JSONObject();
 		properties.put("class", object.getClass().getName());
+		properties.put("virtual", true);
 		sensor.setProperties(properties);
 		return sensor;
 	}

@@ -1,11 +1,13 @@
 package com.gitee.swsk33.swmmsensorthings.model;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.gitee.swsk33.swmmsensorthings.annotation.SensorThingsOptional;
 import lombok.Data;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 数据流
@@ -51,16 +53,25 @@ public class Datastream extends SensorThingsObject {
 	/**
 	 * 对应物体
 	 */
+	@JSONField(name = "Thing")
 	private Thing thing;
 
 	/**
 	 * 对应传感器
 	 */
+	@JSONField(name = "Sensor")
 	private Sensor sensor;
 
 	/**
 	 * 对应观测属性
 	 */
+	@JSONField(name = "ObservedProperty")
 	private ObservedProperty observedProperty;
+
+	/**
+	 * 该数据流中的全部观测记录
+	 */
+	@JSONField(name = "Observations")
+	private List<Observation> observations;
 
 }

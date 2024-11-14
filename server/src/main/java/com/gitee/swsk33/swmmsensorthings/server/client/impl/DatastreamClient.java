@@ -12,6 +12,11 @@ import java.util.List;
 @Component
 public class DatastreamClient extends BaseSensorThingsClient<Datastream> {
 
+	/**
+	 * 查询时展开的属性
+	 */
+	private static final String[] EXPAND_PROPERTIES = new String[]{"ObservedProperty", "Sensor", "Thing", "Observations"};
+
 	public boolean add(Datastream object) {
 		return super.add(object);
 	}
@@ -20,8 +25,12 @@ public class DatastreamClient extends BaseSensorThingsClient<Datastream> {
 		return super.remove(id, Datastream.class);
 	}
 
-	public Datastream get(Object id) {
-		return super.get(id, Datastream.class);
+	public Datastream getById(Object id) {
+		return super.getById(id, Datastream.class, EXPAND_PROPERTIES);
+	}
+
+	public Datastream getByName(String name) {
+		return super.getByName(name, Datastream.class, EXPAND_PROPERTIES);
 	}
 
 	public List<Datastream> getAll() {

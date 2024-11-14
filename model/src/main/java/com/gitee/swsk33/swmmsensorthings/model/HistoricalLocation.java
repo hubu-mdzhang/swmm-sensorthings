@@ -1,5 +1,6 @@
 package com.gitee.swsk33.swmmsensorthings.model;
 
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;
 import lombok.ToString;
 
@@ -20,11 +21,13 @@ public class HistoricalLocation extends SensorThingsObject {
 	/**
 	 * 对应物品
 	 */
+	@JSONField(name = "Thing")
 	private Thing thing;
 
 	/**
 	 * 对应具体地点
 	 */
+	@JSONField(name = "Location")
 	private Location location;
 
 }

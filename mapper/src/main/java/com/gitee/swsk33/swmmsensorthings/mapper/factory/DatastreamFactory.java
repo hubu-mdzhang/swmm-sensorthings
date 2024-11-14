@@ -49,7 +49,7 @@ public class DatastreamFactory {
 	public static Datastream createDatastream(VisualObject object, String name, Sensor sensor, Thing thing) {
 		// 先创建观测属性
 		ObservedProperty property = new ObservedProperty();
-		property.setName(name);
+		property.setName(String.format("%s-%s", object.getId(), name));
 		property.setDescription("The observed property of " + object.getId());
 		property.setDefinition(object.getClass().getName() + "." + name);
 		// 创建数据流

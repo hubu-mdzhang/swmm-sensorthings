@@ -1,6 +1,7 @@
 package com.gitee.swsk33.swmmsensorthings.server.client;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.gitee.swsk33.swmmsensorthings.model.SensorThingsObject;
 import com.gitee.swsk33.swmmsensorthings.server.util.RequestClient;
@@ -66,14 +67,19 @@ public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
 	}
 
 	/**
-	 * 获取一个SensorThings对象
+	 * 根据id，获取一个SensorThings对象
 	 *
-	 * @param id   要获取的SensorThings对象的id
-	 * @param type 要获取的SensorThings对象具体类型
+	 * @param id      要获取的SensorThings对象的id
+	 * @param type    要获取的SensorThings对象具体类型
+	 * @param expands 要展开的对象属性，不展开任何属性传入null
 	 * @return 获取的SensorThings对象，不存在返回null
 	 */
-	protected T get(Object id, Class<T> type) {
-		try (Response response = requestClient.get(String.format("%s(%s)", getTypePrefix(type), id))) {
+	protected T getById(Object id, Class<T> type, String[] expands) {
+		String path = String.format("%s(%s)", getTypePrefix(type), id);
+		if (expands != null && expands.length > 0) {
+			path += "?$expand=" + String.join(",", expands);
+		}
+		try (Response response = requestClient.get(path)) {
 			if (response.code() == OK) {
 				ResponseBody body = response.body();
 				if (body != null) {
@@ -81,7 +87,37 @@ public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
 				}
 			}
 		} catch (Exception e) {
-			log.error("获取{}时出现错误！", type.getSimpleName());
+			log.error("根据id获取{}时出现错误！", type.getSimpleName());
+			log.error(e.getMessage());
+		}
+		return null;
+	}
+
+	/**
+	 * 根据名称，获取一个SensorThings对象
+	 *
+	 * @param name    要获取的对象名称
+	 * @param type    要获取的对象类型
+	 * @param expands 要展开的对象属性，不展开任何属性传入null
+	 * @return 对应的对象，不存在返回null
+	 */
+	protected T getByName(String name, Class<T> type, String[] expands) {
+		String path = String.format("%s?$filter=name eq '%s'", getTypePrefix(type), name);
+		if (expands != null && expands.length > 0) {
+			path += "&$expand=" + String.join(",", expands);
+		}
+		try (Response response = requestClient.get(path)) {
+			if (response.code() == OK) {
+				ResponseBody body = response.body();
+				if (body != null) {
+					JSONArray resultArray = JSON.parseObject(body.bytes()).getJSONArray("value");
+					if (!resultArray.isEmpty()) {
+						return JSON.parseObject(resultArray.getJSONObject(0).toJSONBBytes(), type);
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.error("根据名称查询{}时出现错误！", type.getSimpleName());
 			log.error(e.getMessage());
 		}
 		return null;
@@ -117,21 +153,7 @@ public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
 	 * @return 是否存在
 	 */
 	protected boolean existByName(String name, Class<T> type) {
-		try (Response response = requestClient.get(String.format("%s?$filter=name eq '%s'", getTypePrefix(type), name))) {
-			if (response.code() == OK) {
-				ResponseBody body = response.body();
-				if (body != null) {
-					JSONObject resultObject = JSON.parseObject(body.bytes());
-					if (!resultObject.getJSONArray("value").isEmpty()) {
-						return true;
-					}
-				}
-			}
-		} catch (Exception e) {
-			log.error("查询{}存在时出现错误！", type.getSimpleName());
-			log.error(e.getMessage());
-		}
-		return false;
+		return getByName(name, type, null) != null;
 	}
 
 }

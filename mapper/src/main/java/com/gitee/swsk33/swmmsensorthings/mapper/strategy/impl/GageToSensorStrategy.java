@@ -20,7 +20,7 @@ public class GageToSensorStrategy implements SensorCreateStrategy {
 		RainGage rainGage = (RainGage) object;
 		// 创建Sensor
 		Sensor sensor = new Sensor();
-		sensor.setName(rainGage.getId() + " RainGage Sensor");
+		sensor.setName(rainGage.getId());
 		sensor.setDescription("This is the concrete rain gage sensor " + rainGage.getId() + " of the SWMM system.");
 		sensor.setMetadata(RainGage.class.getSimpleName());
 		sensor.setEncodingType(EncodingType.JSON);
@@ -28,6 +28,7 @@ public class GageToSensorStrategy implements SensorCreateStrategy {
 		try {
 			sensor.setProperties(readIntrinsicProperties(rainGage));
 			sensor.getProperties().put("class", RainGage.class.getName());
+			sensor.getProperties().put("virtual", false);
 		} catch (Exception e) {
 			log.error("读取雨量计对象固有属性出错！");
 			log.error(e.getMessage());
