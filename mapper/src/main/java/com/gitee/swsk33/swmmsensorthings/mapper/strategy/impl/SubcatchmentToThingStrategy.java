@@ -46,6 +46,7 @@ public class SubcatchmentToThingStrategy implements ThingCreateStrategy {
 		// 读取固有属性
 		try {
 			thing.setProperties(readIntrinsicProperties(catchment));
+			thing.getProperties().put("class", Subcatchment.class.getName());
 		} catch (Exception e) {
 			log.error("读取子汇水区域的固有属性出错！");
 			log.error(e.getMessage());

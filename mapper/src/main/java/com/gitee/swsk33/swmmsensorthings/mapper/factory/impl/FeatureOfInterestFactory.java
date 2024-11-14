@@ -54,6 +54,7 @@ public class FeatureOfInterestFactory implements SensorThingsObjectFactory {
 		try {
 			// 追加属性
 			featureOfInterest.setProperties(readIntrinsicProperties(catchment));
+			featureOfInterest.getProperties().put("class", FeatureOfInterest.class.getName());
 		} catch (Exception e) {
 			log.error("读取固有属性时发生错误！");
 			log.error(e.getMessage());

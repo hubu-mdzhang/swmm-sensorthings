@@ -27,6 +27,31 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Spring Boot注解元数据生成 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- Okhttp客户端 -->
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+		</dependency>
+
+		<!-- Fastjson 解析 -->
+		<dependency>
+			<groupId>com.alibaba.fastjson2</groupId>
+			<artifactId>fastjson2</artifactId>
+		</dependency>
+
+		<!-- SWMM到SensorThings对象映射 -->
+		<dependency>
+			<groupId>com.gitee.swsk33</groupId>
+			<artifactId>swmm-sensorthings-mapper</artifactId>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>

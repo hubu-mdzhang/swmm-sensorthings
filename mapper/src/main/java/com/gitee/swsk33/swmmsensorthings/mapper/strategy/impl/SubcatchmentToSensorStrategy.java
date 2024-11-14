@@ -1,5 +1,6 @@
 package com.gitee.swsk33.swmmsensorthings.mapper.strategy.impl;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.gitee.swsk33.swmmsensorthings.mapper.param.EncodingType;
 import com.gitee.swsk33.swmmsensorthings.mapper.strategy.SensorCreateStrategy;
 import com.gitee.swsk33.swmmsensorthings.model.Sensor;
@@ -17,10 +18,14 @@ public class SubcatchmentToSensorStrategy implements SensorCreateStrategy {
 	public Sensor createSensor(VisualObject object) {
 		// 创建为虚拟传感器
 		Sensor sensor = new Sensor();
-		sensor.setName(object.getId() + " Sensor");
+		sensor.setName(object.getId() + " Subcatchment Sensor");
 		sensor.setDescription("The virtual sensor of the subcatchment " + object.getId() + ".");
 		sensor.setMetadata(Subcatchment.class.getSimpleName());
 		sensor.setEncodingType(EncodingType.JSON);
+		// 设定附加属性
+		JSONObject properties = new JSONObject();
+		properties.put("class", object.getClass().getName());
+		sensor.setProperties(properties);
 		return sensor;
 	}
 

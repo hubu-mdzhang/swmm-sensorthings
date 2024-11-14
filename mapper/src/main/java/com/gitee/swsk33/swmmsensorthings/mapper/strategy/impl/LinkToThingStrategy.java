@@ -44,6 +44,7 @@ public class LinkToThingStrategy implements ThingCreateStrategy {
 		// 设定固有属性
 		try {
 			thing.setProperties(readIntrinsicProperties(link));
+			thing.getProperties().put("class", object.getClass().getName());
 		} catch (Exception e) {
 			log.error("读取链接类型的固有属性出错！");
 			log.error(e.getMessage());
