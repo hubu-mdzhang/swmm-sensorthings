@@ -112,7 +112,7 @@ public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
 				if (body != null) {
 					JSONArray resultArray = JSON.parseObject(body.bytes()).getJSONArray("value");
 					if (!resultArray.isEmpty()) {
-						return JSON.parseObject(resultArray.getJSONObject(0).toJSONBBytes(), type);
+						return resultArray.getJSONObject(0).toJavaObject(type);
 					}
 				}
 			}
@@ -135,7 +135,7 @@ public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
 				ResponseBody body = response.body();
 				if (body != null) {
 					JSONObject resultObject = JSON.parseObject(body.bytes());
-					return JSON.parseArray(resultObject.getJSONArray("value").toJSONBBytes(), type);
+					return resultObject.getJSONArray("value").toJavaList(type);
 				}
 			}
 		} catch (Exception e) {

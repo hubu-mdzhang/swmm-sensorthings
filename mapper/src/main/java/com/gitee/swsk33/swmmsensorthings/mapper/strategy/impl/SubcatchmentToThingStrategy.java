@@ -13,6 +13,7 @@ import org.locationtech.jts.geom.Polygon;
 import java.util.Collections;
 
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.GeometryUtils.geometryToGeoJSON;
+import static com.gitee.swsk33.swmmsensorthings.mapper.util.NameUtils.generateObjectName;
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils.readIntrinsicProperties;
 
 /**
@@ -26,7 +27,7 @@ public class SubcatchmentToThingStrategy implements ThingCreateStrategy {
 		Subcatchment catchment = (Subcatchment) object;
 		// 创建Thing
 		Thing thing = new Thing();
-		thing.setName(catchment.getId());
+		thing.setName(generateObjectName(object));
 		thing.setDescription("The subcatchment " + catchment.getId() + " of SWMM System.");
 		// 构建地理位置几何图形
 		Coordinate[] coordinates = new Coordinate[catchment.getPolygon().size() + 1];

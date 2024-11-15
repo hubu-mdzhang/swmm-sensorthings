@@ -8,8 +8,15 @@ com:
       # SensorThings服务端配置
       sensor-things-server:
         # HTTP API配置
-        host: ${SENSOR_THINGS_HTTP_HOST:127.0.0.1}
-        port: ${SENSOR_THINGS_HTTP_PORT:8080}
+        url: ${SENSOR_THINGS_HTTP_URL:http://127.0.0.1:8080/FROST-Server}
         # MQTT Broker配置
         mqtt-broker-host: ${SENSOR_THINGS_MQTT_HOST:127.0.0.1}
         mqtt-broker-port: ${SENSOR_THINGS_MQTT_PORT:1883}
+      # SWMM输入配置
+      swmm:
+        # 输入inp文件
+        input-file: ${SWMM_INPUT:demo.inp}
+        # 报告rpt文件
+        report-file: ${SWMM_REPORT:demo.rpt}
+        # 输出out文件
+        output-file: ${SWMM_OUTPUT:}

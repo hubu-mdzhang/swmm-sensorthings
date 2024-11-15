@@ -3,6 +3,7 @@ package com.gitee.swsk33.swmmsensorthings.mapper.strategy.impl;
 import com.alibaba.fastjson2.JSONObject;
 import com.gitee.swsk33.swmmsensorthings.mapper.param.EncodingType;
 import com.gitee.swsk33.swmmsensorthings.mapper.strategy.SensorCreateStrategy;
+import com.gitee.swsk33.swmmsensorthings.mapper.util.NameUtils;
 import com.gitee.swsk33.swmmsensorthings.model.Sensor;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +18,10 @@ public class LinkToSensorStrategy implements SensorCreateStrategy {
 	public Sensor createSensor(VisualObject object) {
 		// 创建为虚拟传感器
 		Sensor sensor = new Sensor();
-		sensor.setName(object.getId());
+		sensor.setName(NameUtils.generateObjectName(object));
 		sensor.setDescription("The virtual sensor of the link " + object.getId() + ".");
-		sensor.setMetadata(object.getClass().getSimpleName());
 		sensor.setEncodingType(EncodingType.JSON);
+		sensor.setMetadata(object.getClass().getSimpleName());
 		// 设定附加属性
 		JSONObject properties = new JSONObject();
 		properties.put("class", object.getClass().getName());

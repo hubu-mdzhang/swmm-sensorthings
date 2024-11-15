@@ -13,6 +13,7 @@ import org.locationtech.jts.geom.LineString;
 import java.util.Collections;
 
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.GeometryUtils.geometryToGeoJSON;
+import static com.gitee.swsk33.swmmsensorthings.mapper.util.NameUtils.generateObjectName;
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils.readIntrinsicProperties;
 
 /**
@@ -26,7 +27,7 @@ public class LinkToThingStrategy implements ThingCreateStrategy {
 		Link link = (Link) object;
 		// 创建Thing
 		Thing thing = new Thing();
-		thing.setName(link.getId());
+		thing.setName(generateObjectName(link));
 		thing.setDescription("The link " + link.getId() + " of SWMM System.");
 		// 创建地理位置几何图形
 		Coordinate[] startToEnd = new Coordinate[2];

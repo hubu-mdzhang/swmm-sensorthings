@@ -13,6 +13,7 @@ import org.locationtech.jts.geom.Point;
 import java.util.Collections;
 
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.GeometryUtils.geometryToGeoJSON;
+import static com.gitee.swsk33.swmmsensorthings.mapper.util.NameUtils.generateObjectName;
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils.readIntrinsicProperties;
 
 /**
@@ -26,7 +27,7 @@ public class NodeToThingStrategy implements ThingCreateStrategy {
 		Node node = (Node) object;
 		// 创建Thing
 		Thing thing = new Thing();
-		thing.setName(node.getId());
+		thing.setName(generateObjectName(object));
 		thing.setDescription("The node " + node.getId() + " of SWMM System.");
 		// 创建地理要素
 		Point point = geometryFactory.createPoint(new Coordinate(node.getCoordinate().getX(), node.getCoordinate().getY()));

@@ -7,6 +7,7 @@ import io.github.swsk33.swmmjava.model.RainGage;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.gitee.swsk33.swmmsensorthings.mapper.util.NameUtils.generateObjectName;
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils.readIntrinsicProperties;
 
 /**
@@ -20,7 +21,7 @@ public class GageToSensorStrategy implements SensorCreateStrategy {
 		RainGage rainGage = (RainGage) object;
 		// 创建Sensor
 		Sensor sensor = new Sensor();
-		sensor.setName(rainGage.getId());
+		sensor.setName(generateObjectName(rainGage));
 		sensor.setDescription("This is the concrete rain gage sensor " + rainGage.getId() + " of the SWMM system.");
 		sensor.setMetadata(RainGage.class.getSimpleName());
 		sensor.setEncodingType(EncodingType.JSON);

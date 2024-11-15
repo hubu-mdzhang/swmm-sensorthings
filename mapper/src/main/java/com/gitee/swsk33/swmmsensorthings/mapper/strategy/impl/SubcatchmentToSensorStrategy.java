@@ -8,6 +8,8 @@ import io.github.swsk33.swmmjava.model.Subcatchment;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.gitee.swsk33.swmmsensorthings.mapper.util.NameUtils.generateObjectName;
+
 /**
  * 将子汇水区域的计算属性映射成虚拟传感器的具体策略
  */
@@ -18,7 +20,7 @@ public class SubcatchmentToSensorStrategy implements SensorCreateStrategy {
 	public Sensor createSensor(VisualObject object) {
 		// 创建为虚拟传感器
 		Sensor sensor = new Sensor();
-		sensor.setName(object.getId());
+		sensor.setName(generateObjectName(object));
 		sensor.setDescription("The virtual sensor of the subcatchment " + object.getId() + ".");
 		sensor.setMetadata(Subcatchment.class.getSimpleName());
 		sensor.setEncodingType(EncodingType.JSON);

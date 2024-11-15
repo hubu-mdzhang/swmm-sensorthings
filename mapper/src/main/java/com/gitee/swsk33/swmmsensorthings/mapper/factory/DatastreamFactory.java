@@ -20,6 +20,7 @@ import java.util.Set;
 
 import static com.gitee.swsk33.swmmsensorthings.mapper.param.EncodingType.GEO_JSON;
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.GeometryUtils.geometryToGeoJSON;
+import static com.gitee.swsk33.swmmsensorthings.mapper.util.NameUtils.generateObservedPropertyName;
 
 /**
  * 创建数据流对象的简单工厂
@@ -80,12 +81,12 @@ public class DatastreamFactory {
 	public static Datastream createDatastream(VisualObject object, String name, Sensor sensor, Thing thing) {
 		// 先创建观测属性
 		ObservedProperty property = new ObservedProperty();
-		property.setName(String.format("%s-%s", object.getId(), name));
+		property.setName(generateObservedPropertyName(object, name));
 		property.setDescription("The observed property of " + object.getId());
 		property.setDefinition(object.getClass().getName() + "." + name);
 		// 创建数据流
 		Datastream datastream = new Datastream();
-		datastream.setName(String.format("%s-%s", object.getId(), name));
+		datastream.setName(generateObservedPropertyName(object, name));
 		datastream.setDescription("The datastream of " + object.getId() + "which contains observation record about the property " + name + ".");
 		datastream.setObservationType(object.getClass().getName());
 		datastream.setUnitOfMeasurement(new JSONObject());

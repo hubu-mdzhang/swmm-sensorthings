@@ -7,6 +7,8 @@ import com.gitee.swsk33.swmmsensorthings.model.Sensor;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.gitee.swsk33.swmmsensorthings.mapper.util.NameUtils.generateObjectName;
+
 /**
  * 将节点类型的计算属性映射成虚拟传感器的具体策略
  */
@@ -17,7 +19,7 @@ public class NodeToSensorStrategy implements SensorCreateStrategy {
 	public Sensor createSensor(VisualObject object) {
 		// 创建为虚拟传感器
 		Sensor sensor = new Sensor();
-		sensor.setName(object.getId());
+		sensor.setName(generateObjectName(object));
 		sensor.setDescription("The virtual sensor of the node " + object.getId() + ".");
 		sensor.setMetadata(object.getClass().getSimpleName());
 		sensor.setEncodingType(EncodingType.JSON);

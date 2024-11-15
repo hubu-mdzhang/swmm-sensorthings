@@ -13,14 +13,11 @@ import org.springframework.stereotype.Component;
 public class SensorThingsServerProperties {
 
 	/**
-	 * SensorThings服务器HTTP地址
+	 * SensorThings服务器HTTP地址<br>
+	 * 例如：<code>http://localhost:8080/my-sensorthings-server</code><br>
+	 * 不要以<code>/</code>结尾，无需带上版本号部分（例如：<code>/v1.1</code>）
 	 */
-	private String host;
-
-	/**
-	 * SensorThings服务器HTTP端口
-	 */
-	private int port;
+	private String url;
 
 	/**
 	 * SensorThings的MQTT Broker地址

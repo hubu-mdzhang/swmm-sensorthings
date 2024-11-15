@@ -13,6 +13,7 @@ import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygon;
 
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.GeometryUtils.geometryToGeoJSON;
+import static com.gitee.swsk33.swmmsensorthings.mapper.util.NameUtils.generateObjectName;
 import static com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils.readIntrinsicProperties;
 
 /**
@@ -65,7 +66,7 @@ public class FeatureOfInterestFactory implements SensorThingsObjectFactory {
 		Subcatchment catchment = (Subcatchment) object;
 		// 构造兴趣要素对象
 		FeatureOfInterest featureOfInterest = new FeatureOfInterest();
-		featureOfInterest.setName(catchment.getId());
+		featureOfInterest.setName(generateObjectName(object));
 		featureOfInterest.setDescription("The feature of interest about subcatchment " + catchment.getId() + " in SWMM System.");
 		featureOfInterest.setEncodingType(EncodingType.GEO_JSON);
 		// 创建多边形

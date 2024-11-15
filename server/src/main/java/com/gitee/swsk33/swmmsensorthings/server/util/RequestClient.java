@@ -37,7 +37,7 @@ public class RequestClient {
 	private void initialize() {
 		// 初始化一些属性
 		client = new OkHttpClient();
-		urlPrefix = String.format("http://%s:%d/v1.1", properties.getHost(), properties.getPort());
+		urlPrefix = String.format("%s/v1.1", properties.getUrl());
 		log.info("HTTP请求客户端已完成初始化！");
 	}
 
