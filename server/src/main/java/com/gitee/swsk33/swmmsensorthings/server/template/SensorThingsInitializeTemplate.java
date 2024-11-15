@@ -4,9 +4,8 @@ import com.gitee.swsk33.swmmsensorthings.mapper.factory.DatastreamFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.FeatureOfInterestFactory;
 import com.gitee.swsk33.swmmsensorthings.model.Datastream;
 import com.gitee.swsk33.swmmsensorthings.model.FeatureOfInterest;
-import com.gitee.swsk33.swmmsensorthings.server.client.impl.DatastreamClient;
-import com.gitee.swsk33.swmmsensorthings.server.client.impl.FeatureOfInterestClient;
-import com.gitee.swsk33.swmmsensorthings.server.client.impl.SensorClient;
+import com.gitee.swsk33.swmmsensorthings.model.Sensor;
+import com.gitee.swsk33.swmmsensorthings.server.client.SensorThingsObjectClient;
 import io.github.swsk33.swmmjava.model.Subcatchment;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +22,7 @@ import java.util.List;
 public class SensorThingsInitializeTemplate {
 
 	@Autowired
-	private SensorClient sensorClient;
-
-	@Autowired
-	private FeatureOfInterestClient featureOfInterestClient;
-
-	@Autowired
-	private DatastreamClient datastreamClient;
+	private SensorThingsObjectClient client;
 
 	/**
 	 * 执行全部步骤
@@ -38,14 +31,14 @@ public class SensorThingsInitializeTemplate {
 	 */
 	public void execute(VisualObject object) {
 		// 若对象对应的传感器（实体或者虚拟）存在，说明该对象对应的全部SensorThings对象存在，不进行该对象初始化
-		if (sensorClient.existByName(object.getId())) {
+		if (client.existByName(object.getId(), Sensor.class)) {
 			log.warn("对象{}所对应的SensorThings对象已存在，跳过其转换映射与初始化步骤！", object.getId());
 			return;
 		}
 		// 如果是子汇水区域，则转换成兴趣要素并发送到服务器
 		if (Subcatchment.class.isAssignableFrom(object.getClass())) {
 			FeatureOfInterest featureOfInterest = (FeatureOfInterest) FeatureOfInterestFactory.getInstance().createObject(object);
-			if (!featureOfInterestClient.add(featureOfInterest)) {
+			if (!client.add(featureOfInterest)) {
 				log.error("添加兴趣要素{}时出错！", featureOfInterest.getName());
 			}
 		}
@@ -53,7 +46,7 @@ public class SensorThingsInitializeTemplate {
 		List<Datastream> datastreamList = DatastreamFactory.createDatastreamList(object);
 		// 发送请求
 		for (Datastream datastream : datastreamList) {
-			if (!datastreamClient.add(datastream)) {
+			if (!client.add(datastream)) {
 				log.error("添加数据流{}时出错！", datastream.getName());
 			}
 		}

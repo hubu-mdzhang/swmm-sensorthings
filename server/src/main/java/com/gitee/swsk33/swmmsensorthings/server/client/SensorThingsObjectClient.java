@@ -18,13 +18,11 @@ import static com.gitee.swsk33.swmmsensorthings.server.param.HttpStatusCode.OK;
 import static com.gitee.swsk33.swmmsensorthings.server.param.SensorThingsPrefix.getTypePrefix;
 
 /**
- * 通用抽象SensorThings API请求客户端
- *
- * @param <T> 该客户端操作的SensorThings对象具体类型
+ * 通用SensorThings API请求客户端
  */
 @Slf4j
 @Component
-public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
+public class SensorThingsObjectClient {
 
 	@Autowired
 	private RequestClient requestClient;
@@ -35,15 +33,19 @@ public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
 	 * @param object 添加的SensorThings对象
 	 * @return 是否添加成功
 	 */
-	protected boolean add(T object) {
+	public <T extends SensorThingsObject> boolean add(T object) {
 		try (Response response = requestClient.post(getTypePrefix(object.getClass()), JSON.toJSONBytes(object))) {
 			if (response.code() == CREATED) {
 				return true;
+			}
+			if (response.body() != null) {
+				log.error("添加{}失败！状态码：{}，响应消息：{}", object.getClass().getSimpleName(), response.code(), response.body().string());
 			}
 		} catch (Exception e) {
 			log.error("增加{}时出现错误！", object.getClass().getSimpleName());
 			log.error(e.getMessage());
 		}
+
 		return false;
 	}
 
@@ -54,10 +56,13 @@ public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
 	 * @param type 要移除的SensorThings对象具体类型
 	 * @return 是否移除成功
 	 */
-	protected boolean remove(Object id, Class<T> type) {
+	public <T extends SensorThingsObject> boolean remove(Object id, Class<T> type) {
 		try (Response response = requestClient.delete(String.format("%s(%s)", getTypePrefix(type), id))) {
 			if (response.code() == OK) {
 				return true;
+			}
+			if (response.body() != null) {
+				log.error("移除{}失败！状态码：{}，响应消息：{}", type.getSimpleName(), response.code(), response.body().string());
 			}
 		} catch (Exception e) {
 			log.error("移除{}时出现错误！", type.getSimpleName());
@@ -74,7 +79,7 @@ public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
 	 * @param expands 要展开的对象属性，不展开任何属性传入null
 	 * @return 获取的SensorThings对象，不存在返回null
 	 */
-	protected T getById(Object id, Class<T> type, String[] expands) {
+	public <T extends SensorThingsObject> T getById(Object id, Class<T> type, String[] expands) {
 		String path = String.format("%s(%s)", getTypePrefix(type), id);
 		if (expands != null && expands.length > 0) {
 			path += "?$expand=" + String.join(",", expands);
@@ -85,6 +90,9 @@ public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
 				if (body != null) {
 					return JSON.parseObject(body.bytes(), type);
 				}
+			}
+			if (response.body() != null) {
+				log.error("获取{}失败！状态码：{}，响应消息：{}", type.getSimpleName(), response.code(), response.body().string());
 			}
 		} catch (Exception e) {
 			log.error("根据id获取{}时出现错误！", type.getSimpleName());
@@ -101,7 +109,7 @@ public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
 	 * @param expands 要展开的对象属性，不展开任何属性传入null
 	 * @return 对应的对象，不存在返回null
 	 */
-	protected T getByName(String name, Class<T> type, String[] expands) {
+	public <T extends SensorThingsObject> T getByName(String name, Class<T> type, String[] expands) {
 		String path = String.format("%s?$filter=name eq '%s'", getTypePrefix(type), name);
 		if (expands != null && expands.length > 0) {
 			path += "&$expand=" + String.join(",", expands);
@@ -116,6 +124,9 @@ public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
 					}
 				}
 			}
+			if (response.body() != null) {
+				log.error("根据名称查询{}失败！状态码：{}，响应消息：{}", type.getSimpleName(), response.code(), response.body().string());
+			}
 		} catch (Exception e) {
 			log.error("根据名称查询{}时出现错误！", type.getSimpleName());
 			log.error(e.getMessage());
@@ -129,7 +140,7 @@ public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
 	 * @param type 要获取的SensorThings对象具体类型
 	 * @return 获取的SensorThings对象列表，不存在返回空列表
 	 */
-	protected List<T> getAll(Class<T> type) {
+	public <T extends SensorThingsObject> List<T> getAll(Class<T> type) {
 		try (Response response = requestClient.get(getTypePrefix(type))) {
 			if (response.code() == OK) {
 				ResponseBody body = response.body();
@@ -137,6 +148,9 @@ public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
 					JSONObject resultObject = JSON.parseObject(body.bytes());
 					return resultObject.getJSONArray("value").toJavaList(type);
 				}
+			}
+			if (response.body() != null) {
+				log.error("获取全部{}失败！状态码：{}，响应消息：{}", type.getSimpleName(), response.code(), response.body().string());
 			}
 		} catch (Exception e) {
 			log.error("获取全部{}时出现错误！", type.getSimpleName());
@@ -152,7 +166,7 @@ public abstract class BaseSensorThingsClient<T extends SensorThingsObject> {
 	 * @param type 要查询的SensorThings对象具体类型
 	 * @return 是否存在
 	 */
-	protected boolean existByName(String name, Class<T> type) {
+	public <T extends SensorThingsObject> boolean existByName(String name, Class<T> type) {
 		return getByName(name, type, null) != null;
 	}
 

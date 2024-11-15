@@ -59,6 +59,12 @@ public class ObservationFactory {
 		observation.setPhenomenonTime(time);
 		observation.setResultTime(time);
 		observation.setResult(result);
+		// 关联Datastream时，如果id不为空，则仅传递id字段
+		if (stream.getId() != null) {
+			Datastream streamId = new Datastream();
+			streamId.setId(stream.getId());
+			stream = streamId;
+		}
 		observation.setDatastream(stream);
 		return observation;
 	}

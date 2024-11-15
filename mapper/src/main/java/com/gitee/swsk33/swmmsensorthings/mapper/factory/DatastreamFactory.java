@@ -87,7 +87,7 @@ public class DatastreamFactory {
 		// 创建数据流
 		Datastream datastream = new Datastream();
 		datastream.setName(generateObservedPropertyName(object, name));
-		datastream.setDescription("The datastream of " + object.getId() + "which contains observation record about the property " + name + ".");
+		datastream.setDescription("The datastream of " + object.getId() + " which contains observation record about the property " + name + ".");
 		datastream.setObservationType(object.getClass().getName());
 		datastream.setUnitOfMeasurement(new JSONObject());
 		// 关联对象
