@@ -124,7 +124,7 @@ public class SensorThingsObjectClient {
 					}
 				}
 			}
-			if (response.body() != null) {
+			if (response.body() != null && response.code() != OK) {
 				log.error("根据名称查询{}失败！状态码：{}，响应消息：{}", type.getSimpleName(), response.code(), response.body().string());
 			}
 		} catch (Exception e) {

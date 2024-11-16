@@ -1,6 +1,5 @@
 package com.gitee.swsk33.swmmsensorthings.mapper.factory;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.SensorFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.ThingFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.strategy.context.SensorCreateStrategyContext;
@@ -8,7 +7,10 @@ import com.gitee.swsk33.swmmsensorthings.mapper.strategy.context.ThingCreateStra
 import com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils;
 import com.gitee.swsk33.swmmsensorthings.model.*;
 import io.github.swsk33.swmmjava.model.RainGage;
+import io.github.swsk33.swmmjava.model.SWMMSystem;
 import io.github.swsk33.swmmjava.model.VisualObject;
+import io.github.swsk33.swmmjava.param.FlowUnitCode;
+import io.github.swsk33.swmmjava.util.PropertyUnitUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -56,29 +58,31 @@ public class DatastreamFactory {
 	 * 根据给定的SWMM可视对象以及指定的属性，创建一个关于该计算属性的数据流对象，将会同时创建并关联对应的观测属性，并创建Sensor和Thing进行关联<br>
 	 * 若object为RainGage类型，则会创建一个无意义的占位符Thing，可后续手动关联其对应的Subcatchment代表的Thing
 	 *
-	 * @param object SWMM可视对象
-	 * @param name   可视对象的计算属性名称
+	 * @param object       SWMM可视对象
+	 * @param name         可视对象的计算属性名称
+	 * @param flowUnitCode SWMM流量单位属性代码，参考{@link FlowUnitCode}中常量，可通过{@link SWMMSystem}的<code>flowUnits</code>属性获取
 	 * @return 创建的单个数据流对象，出现错误返回null
 	 */
-	public static Datastream createDatastream(VisualObject object, String name) {
+	public static Datastream createDatastream(VisualObject object, String name, int flowUnitCode) {
 		// 如果是雨量计，则仅创建为Sensor
 		if (RainGage.class.isAssignableFrom(object.getClass())) {
-			return createDatastream(object, name, SensorCreateStrategyContext.doCreateSensor(object), createPlaceholderThing(object));
+			return createDatastream(object, name, SensorCreateStrategyContext.doCreateSensor(object), createPlaceholderThing(object), flowUnitCode);
 		}
 		// 否则，创建为Sensor和Thing
-		return createDatastream(object, name, SensorCreateStrategyContext.doCreateSensor(object), ThingCreateStrategyContext.doCreateThing(object));
+		return createDatastream(object, name, SensorCreateStrategyContext.doCreateSensor(object), ThingCreateStrategyContext.doCreateThing(object), flowUnitCode);
 	}
 
 	/**
 	 * 根据给定的SWMM可视对象以及指定的属性，创建一个关于该计算属性的数据流对象，将会同时创建并关联对应的观测属性，并关联给定的Sensor和Thing
 	 *
-	 * @param object SWMM可视对象
-	 * @param name   可视对象的计算属性名称
-	 * @param sensor 给定传感器对象
-	 * @param thing  给定实体对象
+	 * @param object       SWMM可视对象
+	 * @param name         可视对象的计算属性名称
+	 * @param sensor       给定传感器对象
+	 * @param thing        给定实体对象
+	 * @param flowUnitCode SWMM流量单位属性代码，参考{@link FlowUnitCode}中常量，可通过{@link SWMMSystem}的<code>flowUnits</code>属性获取
 	 * @return 创建的单个数据流对象，出现错误返回null
 	 */
-	public static Datastream createDatastream(VisualObject object, String name, Sensor sensor, Thing thing) {
+	public static Datastream createDatastream(VisualObject object, String name, Sensor sensor, Thing thing, int flowUnitCode) {
 		// 先创建观测属性
 		ObservedProperty property = new ObservedProperty();
 		property.setName(generateObservedPropertyName(object, name));
@@ -89,7 +93,7 @@ public class DatastreamFactory {
 		datastream.setName(generateObservedPropertyName(object, name));
 		datastream.setDescription("The datastream of " + object.getId() + " which contains observation record about the property " + name + ".");
 		datastream.setObservationType(object.getClass().getName());
-		datastream.setUnitOfMeasurement(new JSONObject());
+		datastream.setUnitOfMeasurement(PropertyUnitUtils.getUnit(object, name, flowUnitCode));
 		// 关联对象
 		datastream.setThing(thing);
 		datastream.setSensor(sensor);
@@ -105,33 +109,35 @@ public class DatastreamFactory {
 	 * </ul>
 	 *
 	 * @param object SWMM可视对象
+	 *               @param flowUnitCode SWMM流量单位属性代码，参考{@link FlowUnitCode}中常量，可通过{@link SWMMSystem}的<code>flowUnits</code>属性获取
 	 * @return 创建的数据流列表
 	 */
-	public static List<Datastream> createDatastreamList(VisualObject object) {
+	public static List<Datastream> createDatastreamList(VisualObject object, int flowUnitCode) {
 		// 如果是雨量计，则仅创建为Sensor
 		if (RainGage.class.isAssignableFrom(object.getClass())) {
-			return createDatastreamList(object, (Sensor) SensorFactory.getInstance().createObject(object), createPlaceholderThing(object));
+			return createDatastreamList(object, (Sensor) SensorFactory.getInstance().createObject(object), createPlaceholderThing(object), flowUnitCode);
 		}
 		// 否则，创建为Sensor和Thing
-		return createDatastreamList(object, (Sensor) SensorFactory.getInstance().createObject(object), (Thing) ThingFactory.getInstance().createObject(object));
+		return createDatastreamList(object, (Sensor) SensorFactory.getInstance().createObject(object), (Thing) ThingFactory.getInstance().createObject(object), flowUnitCode);
 	}
 
 	/**
 	 * 根据SWMM可视对象计算属性，对其所有计算属性创建对应的数据流对象，与此同时会创建观测属性对应并关联数据流，此外，还关联现有给定的Sensor和Thing对象
 	 *
-	 * @param object SWMM可视对象
-	 * @param sensor 要关联的现有传感器对象
-	 * @param thing  要关联的现有实体对象
+	 * @param object       SWMM可视对象
+	 * @param sensor       要关联的现有传感器对象
+	 * @param thing        要关联的现有实体对象
+	 * @param flowUnitCode SWMM流量单位属性代码，参考{@link FlowUnitCode}中常量，可通过{@link SWMMSystem}的<code>flowUnits</code>属性获取
 	 * @return 创建的数据流列表
 	 */
-	public static List<Datastream> createDatastreamList(VisualObject object, Sensor sensor, Thing thing) {
+	public static List<Datastream> createDatastreamList(VisualObject object, Sensor sensor, Thing thing, int flowUnitCode) {
 		List<Datastream> result = new ArrayList<>();
 		try {
 			// 获取全部计算属性名称
 			Set<String> propertyNames = PropertyReadUtils.getComputedPropertyNames(object);
 			// 创建对象数据流
 			for (String name : propertyNames) {
-				result.add(createDatastream(object, name, sensor, thing));
+				result.add(createDatastream(object, name, sensor, thing, flowUnitCode));
 			}
 		} catch (Exception e) {
 			log.error("读取对象计算属性名称时出现错误！");

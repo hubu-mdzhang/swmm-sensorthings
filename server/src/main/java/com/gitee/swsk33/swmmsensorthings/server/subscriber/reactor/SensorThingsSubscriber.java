@@ -1,6 +1,5 @@
 package com.gitee.swsk33.swmmsensorthings.server.subscriber.reactor;
 
-import com.alibaba.fastjson2.JSON;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.ObservationFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.util.NameUtils;
 import com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils;

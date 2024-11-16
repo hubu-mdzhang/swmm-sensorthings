@@ -22,9 +22,7 @@ public class LocalDateTimeWriter implements ObjectWriter<LocalDateTime> {
 			return;
 		}
 		LocalDateTime localDateTime = (LocalDateTime) object;
-		DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-		String formattedDate = localDateTime.atOffset(ZoneOffset.ofHours(8)).format(formatter);
-		jsonWriter.writeString(formattedDate);
+		jsonWriter.writeString(localDateTime.atOffset(ZoneOffset.ofHours(8)).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 	}
 
 }

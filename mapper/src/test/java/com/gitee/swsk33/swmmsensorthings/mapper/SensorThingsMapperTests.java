@@ -6,6 +6,7 @@ import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.FeatureOfInterestFa
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.SensorFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.ThingFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils;
+import com.gitee.swsk33.swmmsensorthings.model.Datastream;
 import io.github.swsk33.swmmjava.SWMM;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import io.github.swsk33.swmmjava.model.event.VisualObjectEvent;
@@ -52,7 +53,8 @@ public class SensorThingsMapperTests {
 				try {
 					Set<String> propertyNames = PropertyReadUtils.getComputedPropertyNames(event.getData());
 					for (String propertyName : propertyNames) {
-						System.out.println(propertyName + ": " + JSON.toJSONString(ObservationFactory.createObservation(event.getData(), propertyName, event.getComputedTime())));
+						// 不关联数据流，使用空的代替
+						System.out.println(propertyName + ": " + JSON.toJSONString(ObservationFactory.createObservation(event.getData(), propertyName, new Datastream(), event.getComputedTime())));
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

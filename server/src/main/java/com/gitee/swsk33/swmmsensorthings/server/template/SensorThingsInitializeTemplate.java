@@ -6,6 +6,7 @@ import com.gitee.swsk33.swmmsensorthings.model.Datastream;
 import com.gitee.swsk33.swmmsensorthings.model.FeatureOfInterest;
 import com.gitee.swsk33.swmmsensorthings.model.Sensor;
 import com.gitee.swsk33.swmmsensorthings.server.client.SensorThingsObjectClient;
+import io.github.swsk33.swmmjava.SWMM;
 import io.github.swsk33.swmmjava.model.Subcatchment;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,9 @@ public class SensorThingsInitializeTemplate {
 
 	@Autowired
 	private SensorThingsObjectClient client;
+
+	@Autowired
+	private SWMM swmm;
 
 	/**
 	 * 执行全部步骤
@@ -43,7 +47,7 @@ public class SensorThingsInitializeTemplate {
 			}
 		}
 		// 转换成Datastream，将会同时创建Thing（包含Location信息）、Sensor和ObservedProperty并设定好关联
-		List<Datastream> datastreamList = DatastreamFactory.createDatastreamList(object);
+		List<Datastream> datastreamList = DatastreamFactory.createDatastreamList(object, swmm.getSystem().getFlowUnits());
 		// 发送请求
 		for (Datastream datastream : datastreamList) {
 			if (!client.add(datastream)) {

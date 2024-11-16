@@ -28,4 +28,14 @@ class ComputedObservationTests {
 		log.warn(result.getMessage());
 	}
 
+	@Test
+	@DisplayName("测试输入降水数据，计算观测并发送")
+	void testInputSimulationAndObservationPost() {
+		Result<Void> result;
+		while ((result = simulationService.stepRun("Gage1", 10)).isSuccess()) {
+			log.info(result.getMessage());
+		}
+		log.warn(result.getMessage());
+	}
+
 }
