@@ -6,9 +6,9 @@
 		<artifactId>swmm-sensorthings-parent</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>swmm-sensorthings-server</artifactId>
-	<name>SWMM to SensorThings Server</name>
-	<description>SWMM与SensorThings概念模型映射与表达-转换服务端</description>
+	<artifactId>swmm-sensorthings-event-bus</artifactId>
+	<name>SWMM to SensorThings Event Bus</name>
+	<description>SWMM与SensorThings概念模型映射与表达-消息数据总线</description>
 
 	<properties>
 		<spring.boot.version>3.3.4</spring.boot.version>

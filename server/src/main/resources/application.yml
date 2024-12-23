@@ -5,8 +5,8 @@ server:
 com:
   gitee:
     swsk33:
-      # SensorThings服务端配置
-      sensor-things-server:
+      # SensorThings事件总线配置
+      sensor-things-eventbus:
         # HTTP API配置
         url: ${SENSOR_THINGS_HTTP_URL:http://127.0.0.1:8080/FROST-Server}
         # MQTT Broker配置
