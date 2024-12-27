@@ -1,12 +1,12 @@
 package com.gitee.swsk33.swmmsensorthings.eventbus.subscriber.reactor;
 
+import com.gitee.swsk33.swmmsensorthings.eventbus.cache.SensorThingsObjectCache;
+import com.gitee.swsk33.swmmsensorthings.eventbus.client.SensorThingsObjectClient;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.ObservationFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.util.NameUtils;
 import com.gitee.swsk33.swmmsensorthings.mapper.util.PropertyReadUtils;
 import com.gitee.swsk33.swmmsensorthings.model.Datastream;
 import com.gitee.swsk33.swmmsensorthings.model.Observation;
-import com.gitee.swsk33.swmmsensorthings.eventbus.cache.SensorThingsObjectCache;
-import com.gitee.swsk33.swmmsensorthings.eventbus.client.SensorThingsObjectClient;
 import io.github.swsk33.swmmjava.model.event.VisualObjectEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Subscription;
@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.BaseSubscriber;
 
 import java.util.Set;
+
+import static com.gitee.swsk33.swmmsensorthings.mapper.util.TimeUtils.toOffsetDateTime;
 
 /**
  * 订阅SWMM计算对象的通用订阅者
@@ -51,7 +53,7 @@ public class SensorThingsSubscriber extends BaseSubscriber<VisualObjectEvent> {
 					continue;
 				}
 				// 创建观测对象
-				Observation observation = ObservationFactory.createObservation(event.getData(), property, datastream, event.getComputedTime());
+				Observation observation = ObservationFactory.createObservation(event.getData(), property, datastream, toOffsetDateTime(event.getComputedTime()));
 				// 发布观测值
 				client.add(observation);
 			}

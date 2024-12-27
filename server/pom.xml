@@ -47,6 +47,13 @@
 			<artifactId>fastjson2</artifactId>
 		</dependency>
 
+		<!-- Paho MQTT客户端 -->
+		<dependency>
+			<groupId>org.eclipse.paho</groupId>
+			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+			<version>1.2.5</version>
+		</dependency>
+
 		<!-- SWMM到SensorThings对象映射 -->
 		<dependency>
 			<groupId>com.gitee.swsk33</groupId>

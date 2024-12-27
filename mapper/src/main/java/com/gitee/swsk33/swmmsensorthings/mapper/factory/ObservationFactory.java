@@ -7,7 +7,7 @@ import com.gitee.swsk33.swmmsensorthings.model.Observation;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /**
  * 创建观测数据的简单工厂
@@ -24,7 +24,7 @@ public class ObservationFactory {
 	 * @param time   观测记录时间
 	 * @return 观测记录对象，出现错误返回null
 	 */
-	public static Observation createObservation(VisualObject object, String name, Datastream stream, LocalDateTime time) {
+	public static Observation createObservation(VisualObject object, String name, Datastream stream, OffsetDateTime time) {
 		// 读取观测值
 		Object result;
 		try {
@@ -59,7 +59,7 @@ public class ObservationFactory {
 	 * @param time    观测记录时间
 	 * @return 观测记录对象，出现错误返回null
 	 */
-	public static Observation createObservation(VisualObject object, String name, Datastream stream, FeatureOfInterest feature, LocalDateTime time) {
+	public static Observation createObservation(VisualObject object, String name, Datastream stream, FeatureOfInterest feature, OffsetDateTime time) {
 		Observation observation = createObservation(object, name, stream, time);
 		if (observation != null) {
 			observation.setFeatureOfInterest(feature);

@@ -2,6 +2,7 @@ package com.gitee.swsk33.swmmsensorthings.model;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gitee.swsk33.swmmsensorthings.annotation.SensorThingsOptional;
 import lombok.Data;
 import lombok.ToString;
@@ -35,6 +36,7 @@ public class FeatureOfInterest extends SensorThingsObject {
 	 * 该兴趣要素对应的观测值记录
 	 */
 	@JSONField(name = "Observations")
+	@JsonProperty("Observations")
 	private List<Observation> observations;
 
 }

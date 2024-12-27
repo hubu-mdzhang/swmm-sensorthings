@@ -5,26 +5,26 @@ import com.alibaba.fastjson2.reader.ObjectReader;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 
 /**
- * 自定义LocalDateTime的反序列化器
+ * 自定义OffsetDateTime的反序列化器
  */
 @Component
-public class LocalDateTimeReader implements ObjectReader<LocalDateTime> {
+public class OffsetDateTimeReader implements ObjectReader<OffsetDateTime> {
 
 	@Override
-	public LocalDateTime readObject(JSONReader jsonReader, Type fieldType, Object fieldName, long features) {
+	public OffsetDateTime readObject(JSONReader jsonReader, Type fieldType, Object fieldName, long features) {
 		if (jsonReader.nextIfNull()) {
 			return null;
 		}
 		// 解析时间
 		String timeString = jsonReader.readString();
 		if (!timeString.contains("/")) {
-			return ZonedDateTime.parse(timeString).toLocalDateTime();
+			return ZonedDateTime.parse(timeString).toOffsetDateTime();
 		}
-		return ZonedDateTime.parse(timeString.split("/")[0]).toLocalDateTime();
+		return ZonedDateTime.parse(timeString.split("/")[0]).toOffsetDateTime();
 	}
 
 }

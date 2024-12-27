@@ -28,4 +28,24 @@ public class NameUtils {
 		return String.format("%s-%s", object.getId(), propertyName);
 	}
 
+	/**
+	 * 根据Datastream的名称，截取其对应的传感器名称
+	 *
+	 * @param datastreamName Datastream名称，为："传感器名-观测属性名"形式
+	 * @return 对应传感器名称
+	 */
+	public static String getObservationSensorName(String datastreamName) {
+		return datastreamName.split("-")[0];
+	}
+
+	/**
+	 * 根据Datastream的名称，截取其对应的观测属性名称
+	 *
+	 * @param datastreamName Datastream名称，为："传感器名-观测属性名"形式
+	 * @return 对应观测属性名称
+	 */
+	public static String getObservationSensorPropertyName(String datastreamName) {
+		return datastreamName.split("-")[1];
+	}
+
 }

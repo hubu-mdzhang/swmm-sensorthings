@@ -1,8 +1,7 @@
 package com.gitee.swsk33.swmmsensorthings.eventbus.initialize;
 
 import com.alibaba.fastjson2.JSON;
-import com.gitee.swsk33.swmmsensorthings.eventbus.deserializer.LocalDateTimeReader;
-import com.gitee.swsk33.swmmsensorthings.eventbus.serializer.LocalDateTimeWriter;
+import com.gitee.swsk33.swmmsensorthings.eventbus.deserializer.OffsetDateTimeReader;
 import com.gitee.swsk33.swmmsensorthings.eventbus.template.SensorThingsInitializeTemplate;
 import io.github.swsk33.swmmjava.SWMM;
 import io.github.swsk33.swmmjava.model.VisualObject;
@@ -30,10 +29,7 @@ public class SensorThingsObjectInitialize implements InitializingBean {
 	private SensorThingsInitializeTemplate initializeTemplate;
 
 	@Autowired
-	private LocalDateTimeWriter localDateTimeWriter;
-
-	@Autowired
-	private LocalDateTimeReader localDateTimeReader;
+	private OffsetDateTimeReader offsetDateTimeReader;
 
 	@Override
 	public void afterPropertiesSet() {
@@ -45,8 +41,7 @@ public class SensorThingsObjectInitialize implements InitializingBean {
 			initializeTemplate.execute(object);
 		}
 		// 注册时间类型序列化器
-		JSON.register(LocalDateTime.class, localDateTimeWriter);
-		JSON.register(LocalDateTime.class, localDateTimeReader);
+		JSON.register(LocalDateTime.class, offsetDateTimeReader);
 		log.info("全部SWMM对象已注册至SensorThings API服务器！");
 	}
 

@@ -1,7 +1,7 @@
 package com.gitee.swsk33.swmmsensorthings.eventbus;
 
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.Result;
-import com.gitee.swsk33.swmmsensorthings.eventbus.service.HydrologicalSimulationService;
+import com.gitee.swsk33.swmmsensorthings.eventbus.service.SWMMSimulationService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class ComputedObservationTests {
 
 	@Autowired
-	private HydrologicalSimulationService simulationService;
+	private SWMMSimulationService simulationService;
 
 	@Test
 	@DisplayName("测试模拟与计算观测值发送")

@@ -1,19 +1,19 @@
 package com.gitee.swsk33.swmmsensorthings.eventbus.service.impl;
 
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.Result;
-import com.gitee.swsk33.swmmsensorthings.eventbus.service.HydrologicalSimulationService;
+import com.gitee.swsk33.swmmsensorthings.eventbus.service.SWMMSimulationService;
 import io.github.swsk33.swmmjava.SWMM;
 import io.github.swsk33.swmmjava.model.RainGage;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import static io.github.swsk33.swmmjava.param.ObjectTypeCode.GAGE;
 
 @Slf4j
-@Component
-public class HydrologicalSimulationServiceImpl implements HydrologicalSimulationService {
+@Service
+public class SWMMSimulationServiceImpl implements SWMMSimulationService {
 
 	@Autowired
 	private SWMM swmm;

@@ -2,11 +2,12 @@ package com.gitee.swsk33.swmmsensorthings.model;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gitee.swsk33.swmmsensorthings.annotation.SensorThingsOptional;
 import lombok.Data;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -36,13 +37,13 @@ public class Datastream extends SensorThingsObject {
 	 * 观测现象时间
 	 */
 	@SensorThingsOptional
-	private LocalDateTime phenomenonTime;
+	private OffsetDateTime phenomenonTime;
 
 	/**
 	 * 结果时间
 	 */
 	@SensorThingsOptional
-	private LocalDateTime resultTime;
+	private OffsetDateTime resultTime;
 
 	/**
 	 * 其它属性
@@ -54,24 +55,28 @@ public class Datastream extends SensorThingsObject {
 	 * 对应物体
 	 */
 	@JSONField(name = "Thing")
+	@JsonProperty("Thing")
 	private Thing thing;
 
 	/**
 	 * 对应传感器
 	 */
 	@JSONField(name = "Sensor")
+	@JsonProperty("Sensor")
 	private Sensor sensor;
 
 	/**
 	 * 对应观测属性
 	 */
 	@JSONField(name = "ObservedProperty")
+	@JsonProperty("ObservedProperty")
 	private ObservedProperty observedProperty;
 
 	/**
 	 * 该数据流中的全部观测记录
 	 */
 	@JSONField(name = "Observations")
+	@JsonProperty("Observations")
 	private List<Observation> observations;
 
 }
