@@ -3,6 +3,7 @@ package com.gitee.swsk33.swmmsensorthings.eventbus.subscriber.mqtt;
 import com.alibaba.fastjson2.JSON;
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.Result;
 import com.gitee.swsk33.swmmsensorthings.eventbus.service.SWMMSimulationService;
+import com.gitee.swsk33.swmmsensorthings.eventbus.util.DoubleValueUtils;
 import com.gitee.swsk33.swmmsensorthings.model.Observation;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
@@ -30,8 +31,7 @@ public class RainGageSubscriber implements IMqttMessageListener {
 		String sensor = getObservationSensorName(observation.getDatastream().getName());
 		// 输入水文模型并运行一次
 		try {
-			// TODO 观测值类型需要断言
-			Result<Void> result = SWMMSimulationService.stepRun(sensor, (Double) observation.getResult());
+			Result<Void> result = SWMMSimulationService.stepRun(sensor, DoubleValueUtils.parseDouble(observation.getResult()));
 			if (!result.isSuccess()) {
 				log.error("输入并模拟失败！传感器：{}，数值：{}", sensor, observation.getResult());
 				return;
@@ -39,7 +39,7 @@ public class RainGageSubscriber implements IMqttMessageListener {
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
-		log.info("已输入{}的降水量数据，模型运行一个步长...", sensor);
+		log.info("已输入{}的降水量数据，数值：{}，模型运行一个步长...", sensor, observation.getResult());
 	}
 
 }
