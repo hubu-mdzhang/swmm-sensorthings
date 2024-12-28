@@ -29,7 +29,7 @@ public class SWMMConfig {
 		// 创建SWMM引擎对象
 		SWMM swmm = new SWMM(inputProperty.getInputFile(), inputProperty.getReportFile(), inputProperty.getOutputFile());
 		// 订阅所有数据
-		swmm.subscribe(GAGE, beanFactory.getBean(SensorThingsSubscriber.class));
+		// swmm.subscribe(GAGE, beanFactory.getBean(SensorThingsSubscriber.class));
 		swmm.subscribe(SUB_CATCHMENT, beanFactory.getBean(SensorThingsSubscriber.class));
 		swmm.subscribe(LINK, beanFactory.getBean(SensorThingsSubscriber.class));
 		swmm.subscribe(NODE, beanFactory.getBean(SensorThingsSubscriber.class));
