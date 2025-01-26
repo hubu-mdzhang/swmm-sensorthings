@@ -21,9 +21,9 @@ SWEEP_START          01/01
 SWEEP_END            01/02
 DRY_DAYS             0
 REPORT_STEP          00:15:00
-WET_STEP             00:05:00
+WET_STEP             00:10:00
 DRY_STEP             01:00:00
-ROUTING_STEP         0:00:30 
+ROUTING_STEP         0:10:00 
 RULE_STEP            00:00:00
 
 INERTIAL_DAMPING     PARTIAL
@@ -849,7 +849,3 @@ W260             348384.000         4359004.204
 ;;-------------- ------------------ ------------------
 RainGage         343338.351         4361857.639       
 
-
-[BACKDROP]
-FILE       "ScottsLevelBranch.jpg"
-DIMENSIONS 340593.242 4357447.985 350224.094 4362402.318
