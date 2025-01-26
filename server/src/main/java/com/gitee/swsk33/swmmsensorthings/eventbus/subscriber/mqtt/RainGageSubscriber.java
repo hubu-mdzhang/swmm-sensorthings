@@ -39,7 +39,7 @@ public class RainGageSubscriber implements IMqttMessageListener {
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
-		log.info("已输入{}的降水量数据，数值：{}，模型运行一个步长...", sensor, observation.getResult());
+		log.info("已输入{}的降水量数据，数值：{}，时间：{}，模型运行一个步长...", sensor, observation.getResult(), observation.getPhenomenonTime());
 	}
 
 }

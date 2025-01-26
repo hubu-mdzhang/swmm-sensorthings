@@ -7,7 +7,7 @@ import com.gitee.swsk33.swmmsensorthings.annotation.SensorThingsOptional;
 import lombok.Data;
 import lombok.ToString;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 /**
  * 观测值
@@ -19,12 +19,12 @@ public class Observation extends SensorThingsObject {
 	/**
 	 * 观测现象时间
 	 */
-	private OffsetDateTime phenomenonTime;
+	private LocalDateTime phenomenonTime;
 
 	/**
 	 * 观测结果时间
 	 */
-	private OffsetDateTime resultTime;
+	private LocalDateTime resultTime;
 
 	/**
 	 * 观测结果值
@@ -41,7 +41,7 @@ public class Observation extends SensorThingsObject {
 	 * 有效时间
 	 */
 	@SensorThingsOptional
-	private OffsetDateTime validTime;
+	private LocalDateTime validTime;
 
 	/**
 	 * 观测参数

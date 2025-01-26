@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.ToString;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 /**
  * 历史地点
@@ -17,7 +17,7 @@ public class HistoricalLocation extends SensorThingsObject {
 	/**
 	 * 对应时间
 	 */
-	private OffsetDateTime time;
+	private LocalDateTime time;
 
 	/**
 	 * 对应物品

@@ -7,7 +7,7 @@ import com.gitee.swsk33.swmmsensorthings.annotation.SensorThingsOptional;
 import lombok.Data;
 import lombok.ToString;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -37,13 +37,13 @@ public class Datastream extends SensorThingsObject {
 	 * 观测现象时间
 	 */
 	@SensorThingsOptional
-	private OffsetDateTime phenomenonTime;
+	private LocalDateTime phenomenonTime;
 
 	/**
 	 * 结果时间
 	 */
 	@SensorThingsOptional
-	private OffsetDateTime resultTime;
+	private LocalDateTime resultTime;
 
 	/**
 	 * 其它属性

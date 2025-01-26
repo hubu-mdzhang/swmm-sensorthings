@@ -18,8 +18,6 @@ import reactor.core.publisher.BaseSubscriber;
 
 import java.util.Set;
 
-import static com.gitee.swsk33.swmmsensorthings.mapper.util.TimeUtils.toOffsetDateTime;
-
 /**
  * 订阅SWMM计算对象的通用订阅者
  */
@@ -53,7 +51,7 @@ public class SensorThingsSubscriber extends BaseSubscriber<VisualObjectEvent> {
 					continue;
 				}
 				// 创建观测对象
-				Observation observation = ObservationFactory.createObservation(event.getData(), property, datastream, toOffsetDateTime(event.getComputedTime()));
+				Observation observation = ObservationFactory.createObservation(event.getData(), property, datastream, event.getComputedTime());
 				// 发布观测值
 				client.add(observation);
 			}
