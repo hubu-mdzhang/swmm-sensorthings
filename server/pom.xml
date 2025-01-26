@@ -11,7 +11,7 @@
 	<description>SWMM与SensorThings概念模型映射与表达-消息数据总线</description>
 
 	<properties>
-		<spring.boot.version>3.3.4</spring.boot.version>
+		<spring.boot.version>3.4.2</spring.boot.version>
 	</properties>
 
 	<dependencies>
@@ -79,6 +79,13 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${spring.boot.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<excludes>
 						<exclude>
