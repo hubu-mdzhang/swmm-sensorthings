@@ -25,7 +25,7 @@ public class SensorThingsInitializeTemplate {
 	@Autowired
 	private SensorThingsObjectClient client;
 
-	@Autowired
+	//@Autowired
 	private SWMM swmm;
 
 	/**

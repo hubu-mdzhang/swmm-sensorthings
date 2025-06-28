@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "com.gitee.swsk33.sensor-things-eventbus")
+@ConfigurationProperties(prefix = "com.gitee.swsk33.sensor-things-eventbus.sensor-things-server")
 public class SensorThingsServerProperties {
 
 	/**

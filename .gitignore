@@ -34,6 +34,4 @@ dist/
 *.dio.bkp
 
 # 自定义
-input-data/*.out
-input-data/*.rpt
-input-data/*.ini
+input-data/

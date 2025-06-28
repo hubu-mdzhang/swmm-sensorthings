@@ -1,6 +1,8 @@
 # 端口
 server:
   port: ${SERVER_PORT:5354}
+  tomcat:
+    max-http-form-post-size: 12MB
 
 # JSON配置
 spring:
@@ -8,23 +10,37 @@ spring:
     default-property-inclusion: non_null
     deserialization:
       fail-on-unknown-properties: false
+  servlet:
+    multipart:
+      max-file-size: 12MB
+      max-request-size: 12MB
 
 # 自定义配置
 com:
   gitee:
     swsk33:
-      # SensorThings事件总线配置
       sensor-things-eventbus:
-        # HTTP API配置
-        url: ${SENSOR_THINGS_HTTP_URL:http://127.0.0.1:8080/FROST-Server}
-        # MQTT Broker配置
-        mqtt-broker-host: ${SENSOR_THINGS_MQTT_HOST:127.0.0.1}
-        mqtt-broker-port: ${SENSOR_THINGS_MQTT_PORT:1883}
-      # SWMM输入配置
-      swmm:
-        # 输入inp文件
-        input-file: ${SWMM_INPUT:demo.inp}
-        # 报告rpt文件
-        report-file: ${SWMM_REPORT:demo.rpt}
-        # 输出out文件
-        output-file: ${SWMM_OUTPUT:}
+        # 核心配置
+        core:
+          advertise-host: ${SENSOR_THINGS_ADVERTISE_HOST:127.0.0.1}
+          advertise-port: ${SENSOR_THINGS_ADVERTISE_PORT:${server.port}}
+        # SensorThings服务器配置
+        sensor-things-server:
+          # HTTP API配置
+          url: ${SENSOR_THINGS_HTTP_URL:http://127.0.0.1:8080/FROST-Server}
+          # MQTT Broker配置
+          mqtt-broker-host: ${SENSOR_THINGS_MQTT_HOST:127.0.0.1}
+          mqtt-broker-port: ${SENSOR_THINGS_MQTT_PORT:1883}
+
+# 文件上传
+io:
+  github:
+    swsk33:
+      file-lift:
+        core:
+          storage-method: "filesystem"
+          size-limit: 10240
+          allowed-formats:
+            - "inp"
+        filesystem:
+          save-folder: "input-data"

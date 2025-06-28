@@ -11,7 +11,7 @@
 	<description>SWMM与SensorThings概念模型映射与表达-消息数据总线</description>
 
 	<properties>
-		<spring.boot.version>3.4.2</spring.boot.version>
+		<spring.boot.version>3.5.3</spring.boot.version>
 	</properties>
 
 	<dependencies>
@@ -58,6 +58,13 @@
 		<dependency>
 			<groupId>com.gitee.swsk33</groupId>
 			<artifactId>swmm-sensorthings-mapper</artifactId>
+		</dependency>
+
+		<!-- FileLift文件上传 -->
+		<dependency>
+			<groupId>io.github.swsk33</groupId>
+			<artifactId>file-lift-spring-boot-starter</artifactId>
+			<version>1.2.1</version>
 		</dependency>
 	</dependencies>
 
