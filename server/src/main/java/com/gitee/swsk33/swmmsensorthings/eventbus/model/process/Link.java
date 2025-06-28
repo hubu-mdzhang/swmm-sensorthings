@@ -1,6 +1,6 @@
 package com.gitee.swsk33.swmmsensorthings.eventbus.model.process;
 
-import com.gitee.swsk33.swmmsensorthings.eventbus.annotation.ProcessesRequired;
+import com.gitee.swsk33.swmmsensorthings.eventbus.annotation.Required;
 import lombok.Data;
 
 /**
@@ -24,7 +24,7 @@ public class Link {
 	/**
 	 * 链接内容
 	 */
-	@ProcessesRequired
+	@Required
 	private String href;
 
 	/**

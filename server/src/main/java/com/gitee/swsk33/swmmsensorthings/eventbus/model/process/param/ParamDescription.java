@@ -1,9 +1,10 @@
 package com.gitee.swsk33.swmmsensorthings.eventbus.model.process.param;
 
-import com.alibaba.fastjson2.JSONObject;
-import com.gitee.swsk33.swmmsensorthings.eventbus.annotation.ProcessesRequired;
+import com.gitee.swsk33.swmmsensorthings.eventbus.annotation.Required;
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.process.Metadata;
 import lombok.Data;
+
+import java.util.Map;
 
 /**
  * API-Processes中关于进程/算子的参数描述（入参和出参）的抽象类
@@ -38,7 +39,7 @@ public abstract class ParamDescription {
 	 *     <li>值传递：schema对象本身即为一个JSON Schema对象</li>
 	 * </ul>
 	 */
-	@ProcessesRequired
-	private JSONObject schema;
+	@Required
+	private Map<String, Object> schema;
 
 }

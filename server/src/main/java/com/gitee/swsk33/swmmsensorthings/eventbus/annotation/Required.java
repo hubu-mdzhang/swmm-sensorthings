@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ProcessesRequired {
+public @interface Required {
 
 	/**
 	 * 被标注字段是否必须存在

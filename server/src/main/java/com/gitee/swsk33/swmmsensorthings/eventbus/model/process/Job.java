@@ -1,6 +1,7 @@
 package com.gitee.swsk33.swmmsensorthings.eventbus.model.process;
 
-import com.gitee.swsk33.swmmsensorthings.eventbus.annotation.ProcessesRequired;
+import com.gitee.swsk33.swmmsensorthings.eventbus.annotation.AllowedValue;
+import com.gitee.swsk33.swmmsensorthings.eventbus.annotation.Required;
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.process.constant.JobStatus;
 import lombok.Data;
 
@@ -15,18 +16,20 @@ public class Job {
 	/**
 	 * 任务id
 	 */
-	@ProcessesRequired
+	@Required
 	private String jobID;
 
 	/**
 	 * 任务类型，需固定为<code>process</code>
 	 */
-	@ProcessesRequired
+	@Required
+	@AllowedValue("process")
 	private String type = "process";
 
 	/**
 	 * 任务状态，见{@link JobStatus}中常量
 	 */
+	@AllowedValue({JobStatus.ACCEPTED, JobStatus.RUNNING, JobStatus.SUCCESSFUL, JobStatus.FAILED, JobStatus.DISMISSED})
 	private String status;
 
 	/**

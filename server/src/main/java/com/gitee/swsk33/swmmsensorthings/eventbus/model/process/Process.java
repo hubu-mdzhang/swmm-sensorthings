@@ -1,6 +1,7 @@
 package com.gitee.swsk33.swmmsensorthings.eventbus.model.process;
 
-import com.gitee.swsk33.swmmsensorthings.eventbus.annotation.ProcessesRequired;
+import com.gitee.swsk33.swmmsensorthings.eventbus.annotation.AllowedValue;
+import com.gitee.swsk33.swmmsensorthings.eventbus.annotation.Required;
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.process.constant.JobControl;
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.process.constant.TransmissionMode;
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.process.param.InputDescription;
@@ -18,13 +19,13 @@ public class Process {
 	/**
 	 * 进程id
 	 */
-	@ProcessesRequired
+	@Required
 	private String id;
 
 	/**
 	 * 进程版本号
 	 */
-	@ProcessesRequired
+	@Required
 	private String version;
 
 	/**
@@ -55,11 +56,13 @@ public class Process {
 	/**
 	 * 支持接收的任务控制方式列表，见{@link JobControl}中常量
 	 */
+	@AllowedValue({JobControl.SYNC, JobControl.ASYNC, JobControl.DISMISS})
 	private String[] jobControlOptions;
 
 	/**
 	 * 进程输出结果值的传递形式，键{@link TransmissionMode}中常量
 	 */
+	@AllowedValue({TransmissionMode.VALUE, TransmissionMode.REFERENCE})
 	private String[] outputTransmission;
 
 	/**
