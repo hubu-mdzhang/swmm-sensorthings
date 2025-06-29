@@ -1,0 +1,33 @@
+{
+	"id": "swmm",
+	"title": "SWMM Hydrological Model Simulation Process",
+	"description": "This process accepts inp file and receive MQTT observation data for time-step simulation.",
+	"version": "1.0.0",
+	"jobControlOptions": [
+		"async-execute"
+	],
+	"outputTransmission": [
+		"reference"
+	],
+	"inputs": {
+		"inpFile": {
+			"title": "SWMM inp File Input",
+			"description": "Specify the inp file download uri.",
+			"schema": {
+				"type": "string",
+				"format": "uri"
+			}
+		}
+	},
+	"outputs": {
+		"rptFile": {
+			"title": "SWMM rpt File.",
+			"description": "The rpt file output download uri.",
+			"schema": {
+				"type": "string",
+				"format": "uri"
+			}
+		}
+	},
+	"links": []
+}
