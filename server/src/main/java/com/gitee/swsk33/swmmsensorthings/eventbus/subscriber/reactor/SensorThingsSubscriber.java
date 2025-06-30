@@ -19,7 +19,7 @@ import reactor.core.publisher.BaseSubscriber;
 import java.util.Set;
 
 /**
- * 订阅SWMM计算对象的通用订阅者
+ * 订阅SWMM计算对象，并发布到SensorThings服务器的通用订阅者
  */
 @Slf4j
 @Component

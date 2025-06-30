@@ -10,12 +10,11 @@
 		"reference"
 	],
 	"inputs": {
-		"inpFile": {
-			"title": "SWMM inp File Input",
-			"description": "Specify the inp file download uri.",
+		"inputFile": {
+			"title": "SWMM Input File Name (*.inp)",
+			"description": "Specify the inp file name.",
 			"schema": {
-				"type": "string",
-				"format": "uri"
+				"type": "string"
 			}
 		}
 	},

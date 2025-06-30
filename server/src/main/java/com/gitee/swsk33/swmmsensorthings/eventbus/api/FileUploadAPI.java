@@ -35,7 +35,7 @@ public class FileUploadAPI {
 			return Result.resultFailed("上传文件失败！" + result.getMessage());
 		}
 		LocalFile uploadFile = (LocalFile) result.getData();
-		return Result.resultSuccess("上传文件成功！", String.format("http://%s:%d/api/file/get/%s.%s", coreProperties.getAdvertiseHost(), coreProperties.getAdvertisePort(), uploadFile.getName(), uploadFile.getFormat()));
+		return Result.resultSuccess("上传文件成功！", String.format("%s.%s", uploadFile.getName(), uploadFile.getFormat()));
 	}
 
 	@GetMapping("/get/{filename}")
