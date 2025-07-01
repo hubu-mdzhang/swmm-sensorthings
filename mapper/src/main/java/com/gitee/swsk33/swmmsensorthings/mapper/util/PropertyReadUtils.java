@@ -37,7 +37,7 @@ public class PropertyReadUtils {
 	 * 根据注解，读取SWMM可视对象的计算属性
 	 *
 	 * @param object 要读取的可视对象
-	 * @return 包含固有属性的键值对的JSON对象
+	 * @return 包含计算属性的键值对的JSON对象
 	 */
 	public static JSONObject readComputedProperties(VisualObject object) throws Exception {
 		Field[] fields = ReflectUtils.getAllFields(object.getClass());

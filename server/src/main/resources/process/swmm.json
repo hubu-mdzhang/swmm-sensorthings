@@ -20,8 +20,8 @@
 	},
 	"outputs": {
 		"rptFile": {
-			"title": "SWMM rpt File.",
-			"description": "The rpt file output download uri.",
+			"title": "SWMM out File.",
+			"description": "The out file output download uri.",
 			"schema": {
 				"type": "string",
 				"format": "uri"

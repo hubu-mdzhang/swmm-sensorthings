@@ -65,7 +65,7 @@ public class Job {
 	/**
 	 * 任务执行进度，单位是百分比，取值范围：[0, 100]
 	 */
-	private int progress;
+	private double progress;
 
 	/**
 	 * 任务相关链接
