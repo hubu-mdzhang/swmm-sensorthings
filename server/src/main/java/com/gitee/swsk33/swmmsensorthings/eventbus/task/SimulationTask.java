@@ -5,6 +5,7 @@ import com.gitee.swsk33.swmmsensorthings.eventbus.client.SensorThingsObjectClien
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.process.Job;
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.process.constant.JobStatus;
 import com.gitee.swsk33.swmmsensorthings.eventbus.param.SensorThingsExpandProperty;
+import com.gitee.swsk33.swmmsensorthings.eventbus.subscriber.mqtt.RainGageSubscriber;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.DatastreamFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.FeatureOfInterestFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.util.NameUtils;
@@ -19,6 +20,7 @@ import io.github.swsk33.swmmjava.model.VisualObject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -68,6 +70,9 @@ public class SimulationTask implements Runnable {
 	@Autowired
 	private SensorThingsObjectClient client;
 
+	@Autowired
+	private BeanFactory beanFactory;
+
 	/**
 	 * 构造函数
 	 *
@@ -78,6 +83,7 @@ public class SimulationTask implements Runnable {
 		this.id = IdUtil.simpleUUID();
 		// 初始化水文模型
 		this.swmm = new SWMM(inputFile);
+		this.swmm.start();
 		// 初始化订阅者列表
 		this.subscribedTopics = new ArrayList<>();
 		// 初始化Job对象
@@ -119,9 +125,6 @@ public class SimulationTask implements Runnable {
 			}
 		}
 		// 2. 创建订阅者订阅接收雨量计数据
-//		// 创建对应的雨量计订阅者，接收降水数据并输入模型
-//		RainGageSubscriber subscriber = beanFactory.getBean(RainGageSubscriber.class);
-//		subscriber.setSwmm(swmm);
 		// 订阅对应其中降水数据
 		List<VisualObject> gages = swmm.getObjectList(GAGE);
 		// 查询对应传感器观测属性的数据流
@@ -136,12 +139,10 @@ public class SimulationTask implements Runnable {
 				}
 			}
 		}
-		// 订阅全部数据流
+		// 订阅全部雨量计相关的数据流
 		for (Datastream datastream : datastreams) {
 			String topic = String.format("v1.1/Datastreams(%d)/Observations?$expand=%s", (int) datastream.getId(), String.join(",", SensorThingsExpandProperty.getExpandProperty(Observation.class)));
-			mqttClient.subscribe(topic, (topicName, message) -> {
-
-			});
+			mqttClient.subscribe(topic, beanFactory.getBean(RainGageSubscriber.class, swmm));
 			subscribedTopics.add(topic);
 		}
 	}
@@ -168,7 +169,11 @@ public class SimulationTask implements Runnable {
 	 */
 	@Override
 	public void run() {
-
+		try {
+			initialize();
+		} catch (Exception e) {
+			log.error("初始化出错！");
+		}
 	}
 
 }

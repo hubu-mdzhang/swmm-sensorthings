@@ -18,7 +18,7 @@ import static com.gitee.swsk33.swmmsensorthings.mapper.util.NameUtils.getObserva
 import static io.github.swsk33.swmmjava.param.ObjectTypeCode.GAGE;
 
 /**
- * 用于订阅观测数据、并输入到SWMM模型的MQTT订阅者
+ * 用于订阅观测数据、并输入到SWMM模型的MQTT订阅者，一个模型实例对应一个订阅者
  */
 @Slf4j
 @Component
@@ -26,11 +26,19 @@ import static io.github.swsk33.swmmjava.param.ObjectTypeCode.GAGE;
 public class RainGageSubscriber implements IMqttMessageListener {
 
 	/**
-	 * 水文模型对象<br>
-	 * 需要创建时设定
+	 * 水文模型对象
 	 */
 	@Setter
 	private SWMM swmm;
+
+	/**
+	 * 构造函数
+	 *
+	 * @param swmm 输入SWMM对象
+	 */
+	public RainGageSubscriber(SWMM swmm) {
+		this.swmm = swmm;
+	}
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) {
