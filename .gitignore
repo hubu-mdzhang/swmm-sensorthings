@@ -32,6 +32,7 @@ dist/
 
 # draw.io
 *.dio.bkp
+*.dio.dtmp
 
 # 自定义
 input-data/
