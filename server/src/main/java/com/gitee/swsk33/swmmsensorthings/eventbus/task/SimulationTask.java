@@ -6,6 +6,7 @@ import com.gitee.swsk33.swmmsensorthings.eventbus.model.process.Job;
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.process.constant.JobStatus;
 import com.gitee.swsk33.swmmsensorthings.eventbus.param.SensorThingsExpandProperty;
 import com.gitee.swsk33.swmmsensorthings.eventbus.subscriber.mqtt.RainGageSubscriber;
+import com.gitee.swsk33.swmmsensorthings.eventbus.subscriber.reactor.SensorThingsSubscriber;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.DatastreamFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.FeatureOfInterestFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.util.NameUtils;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static io.github.swsk33.swmmjava.param.ObjectTypeCode.GAGE;
+import static io.github.swsk33.swmmjava.param.ObjectTypeCode.*;
 
 /**
  * 水文模型异步模拟任务对象
@@ -124,7 +125,11 @@ public class SimulationTask implements Runnable {
 				}
 			}
 		}
-		// 2. 创建订阅者订阅接收雨量计数据
+		// 2. 创建Reactor订阅者，订阅全部水文计算数据，并记录到SensorThings API服务器
+		this.swmm.subscribe(SUB_CATCHMENT, beanFactory.getBean(SensorThingsSubscriber.class));
+		this.swmm.subscribe(LINK, beanFactory.getBean(SensorThingsSubscriber.class));
+		this.swmm.subscribe(NODE, beanFactory.getBean(SensorThingsSubscriber.class));
+		// 3. 创建订阅者订阅接收雨量计数据，订阅者会调用数据缓存对象，完成数据驱动、时间步长对齐以及水文模拟操作
 		// 订阅对应其中降水数据
 		List<VisualObject> gages = swmm.getObjectList(GAGE);
 		// 查询对应传感器观测属性的数据流
@@ -170,9 +175,21 @@ public class SimulationTask implements Runnable {
 	@Override
 	public void run() {
 		try {
+			// 初始化模型
 			initialize();
+			while (true) {
+				if (swmm.isComplete()) {
+					// 释放资源
+					log.warn("水文模拟结束！");
+					dispose();
+					// 更新状态
+					this.job.setProgress(100);
+					this.job.setStatus(JobStatus.SUCCESSFUL);
+					break;
+				}
+			}
 		} catch (Exception e) {
-			log.error("初始化出错！");
+			log.error(e.getMessage());
 		}
 	}
 

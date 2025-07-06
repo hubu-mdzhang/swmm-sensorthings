@@ -9,7 +9,6 @@ import com.gitee.swsk33.swmmsensorthings.model.Datastream;
 import com.gitee.swsk33.swmmsensorthings.model.Observation;
 import io.github.swsk33.swmmjava.model.event.VisualObjectEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.reactivestreams.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -31,11 +30,6 @@ public class SensorThingsSubscriber extends BaseSubscriber<VisualObjectEvent> {
 
 	@Autowired
 	private SensorThingsObjectCache cache;
-
-	@Override
-	public void hookOnSubscribe(Subscription subscription) {
-		request(1);
-	}
 
 	@Override
 	public void hookOnNext(VisualObjectEvent event) {
