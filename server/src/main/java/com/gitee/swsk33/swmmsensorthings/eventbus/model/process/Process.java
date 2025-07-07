@@ -1,5 +1,6 @@
 package com.gitee.swsk33.swmmsensorthings.eventbus.model.process;
 
+import com.alibaba.fastjson2.JSON;
 import com.gitee.swsk33.swmmsensorthings.eventbus.annotation.AllowedValue;
 import com.gitee.swsk33.swmmsensorthings.eventbus.annotation.Required;
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.process.constant.JobControl;
@@ -14,7 +15,7 @@ import java.util.Map;
  * API-Processes中任务描述
  */
 @Data
-public class Process {
+public class Process implements Cloneable {
 
 	/**
 	 * 进程id
@@ -82,5 +83,10 @@ public class Process {
 	 * </ul>
 	 */
 	private Map<String, OutputDescription> outputs;
+
+	@Override
+	public Process clone() {
+		return JSON.parseObject(JSON.toJSONBytes(this), Process.class);
+	}
 
 }

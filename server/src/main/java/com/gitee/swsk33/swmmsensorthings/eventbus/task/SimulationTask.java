@@ -18,6 +18,7 @@ import com.gitee.swsk33.swmmsensorthings.model.Sensor;
 import io.github.swsk33.swmmjava.SWMM;
 import io.github.swsk33.swmmjava.model.Subcatchment;
 import io.github.swsk33.swmmjava.model.VisualObject;
+import jakarta.annotation.Resource;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static io.github.swsk33.swmmjava.param.ObjectTypeCode.*;
@@ -74,6 +76,9 @@ public class SimulationTask implements Runnable {
 	@Autowired
 	private BeanFactory beanFactory;
 
+	@Resource(name = "jobList")
+	private Map<String, Job> jobList;
+
 	/**
 	 * 构造函数
 	 *
@@ -94,6 +99,8 @@ public class SimulationTask implements Runnable {
 		job.setProcessID("swmm");
 		job.setStarted(LocalDateTime.now());
 		job.setProgress(0);
+		// 存入列表
+		jobList.put(job.getJobID(), job);
 	}
 
 	/**
@@ -177,6 +184,7 @@ public class SimulationTask implements Runnable {
 		try {
 			// 初始化模型
 			initialize();
+			this.job.setStatus(JobStatus.RUNNING);
 			while (true) {
 				if (swmm.isComplete()) {
 					// 释放资源

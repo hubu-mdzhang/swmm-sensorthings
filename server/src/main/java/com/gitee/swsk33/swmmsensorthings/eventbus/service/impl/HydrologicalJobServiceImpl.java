@@ -1,7 +1,7 @@
 package com.gitee.swsk33.swmmsensorthings.eventbus.service.impl;
 
-import cn.hutool.core.io.file.FileNameUtil;
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.Result;
+import com.gitee.swsk33.swmmsensorthings.eventbus.model.process.Job;
 import com.gitee.swsk33.swmmsensorthings.eventbus.property.CoreProperties;
 import com.gitee.swsk33.swmmsensorthings.eventbus.service.HydrologicalJobService;
 import com.gitee.swsk33.swmmsensorthings.eventbus.task.SimulationTask;
@@ -33,12 +33,13 @@ public class HydrologicalJobServiceImpl implements HydrologicalJobService {
 	private ExecutorService taskPool;
 
 	@Override
-	public Result<String> createJob(String inputFile) {
+	public Result<Job> createJob(String inputFile) {
 		// 创建水文模型
 		SWMM swmm = new SWMM(fileSystemProperties.getSaveFolder() + File.separator + inputFile);
 		// 创建异步任务
-		taskPool.execute(beanFactory.getBean(SimulationTask.class, inputFile));
-		return Result.resultSuccess("水文模型创建成功！", String.format("http://%s:%d/api/file/get/%s", coreProperties.getAdvertiseHost(), coreProperties.getAdvertisePort(), FileNameUtil.mainName(inputFile) + ".out"));
+		SimulationTask task = beanFactory.getBean(SimulationTask.class, inputFile);
+		taskPool.execute(task);
+		return Result.resultSuccess("水文模型创建成功！", task.getJob());
 	}
 
 }

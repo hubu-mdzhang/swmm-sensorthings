@@ -19,7 +19,7 @@
 		}
 	},
 	"outputs": {
-		"rptFile": {
+		"outFile": {
 			"title": "SWMM out File.",
 			"description": "The out file output download uri.",
 			"schema": {
