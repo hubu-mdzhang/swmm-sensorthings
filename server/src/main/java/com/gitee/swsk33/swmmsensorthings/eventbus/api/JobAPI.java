@@ -31,7 +31,7 @@ public class JobAPI {
 	}
 
 	@GetMapping("/{jobId}")
-	public Job getJob(@PathVariable String jobId) {
+	public Job getJob(@PathVariable("jobId") String jobId) {
 		return jobList.get(jobId);
 	}
 

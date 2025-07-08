@@ -38,6 +38,7 @@ public class RainGageSubscriber implements IMqttMessageListener {
 	public void messageArrived(String topic, MqttMessage message) {
 		// 解析消息
 		Observation data = JSON.parseObject(message.getPayload(), Observation.class);
+		log.info("接收到：{}", data);
 		// 传递到数据缓存池
 		this.dataPool.addData(data);
 		// 调用缓存池，在时间步长数据集齐时驱动模型运行

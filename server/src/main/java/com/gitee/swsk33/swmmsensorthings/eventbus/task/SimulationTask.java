@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -42,7 +43,7 @@ import static io.github.swsk33.swmmjava.param.ObjectTypeCode.*;
 @Slf4j
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class SimulationTask implements Runnable {
+public class SimulationTask implements Runnable, InitializingBean {
 
 	/**
 	 * 任务id
@@ -99,6 +100,10 @@ public class SimulationTask implements Runnable {
 		job.setProcessID("swmm");
 		job.setStarted(LocalDateTime.now());
 		job.setProgress(0);
+	}
+
+	@Override
+	public void afterPropertiesSet() {
 		// 存入列表
 		jobList.put(job.getJobID(), job);
 	}
@@ -114,7 +119,7 @@ public class SimulationTask implements Runnable {
 			// 若对象对应的传感器（实体或者虚拟）存在，说明该对象对应的全部SensorThings对象存在，不进行该对象初始化
 			if (client.existByName(object.getId(), Sensor.class)) {
 				log.warn("对象{}所对应的SensorThings对象已存在，跳过其转换映射与初始化步骤！", object.getId());
-				return;
+				continue;
 			}
 			// 如果是子汇水区域，则转换成兴趣要素并发送到服务器
 			if (Subcatchment.class.isAssignableFrom(object.getClass())) {
@@ -156,6 +161,7 @@ public class SimulationTask implements Runnable {
 			String topic = String.format("v1.1/Datastreams(%d)/Observations?$expand=%s", (int) datastream.getId(), String.join(",", SensorThingsExpandProperty.getExpandProperty(Observation.class)));
 			mqttClient.subscribe(topic, beanFactory.getBean(RainGageSubscriber.class, swmm));
 			subscribedTopics.add(topic);
+			log.info("已订阅观测数据主题：{}", topic);
 		}
 	}
 
@@ -191,6 +197,7 @@ public class SimulationTask implements Runnable {
 					log.warn("水文模拟结束！");
 					dispose();
 					// 更新状态
+					this.job.setFinished(LocalDateTime.now());
 					this.job.setProgress(100);
 					this.job.setStatus(JobStatus.SUCCESSFUL);
 					break;
