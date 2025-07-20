@@ -10,10 +10,6 @@
 	<name>SWMM to SensorThings Event Bus</name>
 	<description>SWMM与SensorThings概念模型映射与表达-消息数据总线</description>
 
-	<properties>
-		<spring.boot.version>3.5.3</spring.boot.version>
-	</properties>
-
 	<dependencies>
 		<!-- Spring Web -->
 		<dependency>
