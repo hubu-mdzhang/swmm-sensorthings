@@ -72,7 +72,7 @@ public class SimulationTask implements Runnable, InitializingBean {
 	private MqttClient mqttClient;
 
 	@Autowired
-	private SensorThingsObjectClient client;
+	private SensorThingsObjectClient sensorThingsClient;
 
 	@Autowired
 	private BeanFactory beanFactory;
@@ -117,14 +117,14 @@ public class SimulationTask implements Runnable, InitializingBean {
 		// 遍历初始化
 		for (VisualObject object : objects) {
 			// 若对象对应的传感器（实体或者虚拟）存在，说明该对象对应的全部SensorThings对象存在，不进行该对象初始化
-			if (client.existByName(object.getId(), Sensor.class)) {
+			if (sensorThingsClient.existByName(object.getId(), Sensor.class)) {
 				log.warn("对象{}所对应的SensorThings对象已存在，跳过其转换映射与初始化步骤！", object.getId());
 				continue;
 			}
 			// 如果是子汇水区域，则转换成兴趣要素并发送到服务器
 			if (Subcatchment.class.isAssignableFrom(object.getClass())) {
 				FeatureOfInterest featureOfInterest = (FeatureOfInterest) FeatureOfInterestFactory.getInstance().createObject(object);
-				if (!client.add(featureOfInterest)) {
+				if (!sensorThingsClient.add(featureOfInterest)) {
 					log.error("添加兴趣要素{}时出错！", featureOfInterest.getName());
 				}
 			}
@@ -132,7 +132,7 @@ public class SimulationTask implements Runnable, InitializingBean {
 			List<Datastream> datastreamList = DatastreamFactory.createDatastreamList(object, swmm.getSystem().getFlowUnits());
 			// 发送请求
 			for (Datastream datastream : datastreamList) {
-				if (!client.add(datastream)) {
+				if (!sensorThingsClient.add(datastream)) {
 					log.error("添加数据流{}时出错！", datastream.getName());
 				}
 			}
@@ -150,7 +150,7 @@ public class SimulationTask implements Runnable, InitializingBean {
 			Set<String> properties = PropertyReadUtils.getComputedPropertyNames(gage);
 			// 查找每个属性对应的数据流
 			for (String property : properties) {
-				Datastream datastream = client.getByName(NameUtils.generateObservedPropertyName(gage, property), Datastream.class, SensorThingsExpandProperty.getExpandProperty(Datastream.class));
+				Datastream datastream = sensorThingsClient.getByName(NameUtils.generateObservedPropertyName(gage, property), Datastream.class, SensorThingsExpandProperty.getExpandProperty(Datastream.class));
 				if (datastream != null) {
 					datastreams.add(datastream);
 				}
