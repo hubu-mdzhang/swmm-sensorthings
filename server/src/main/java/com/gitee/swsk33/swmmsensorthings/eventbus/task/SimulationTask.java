@@ -5,7 +5,9 @@ import com.gitee.swsk33.swmmsensorthings.eventbus.client.SensorThingsObjectClien
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.process.Job;
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.process.constant.JobStatus;
 import com.gitee.swsk33.swmmsensorthings.eventbus.param.SensorThingsExpandProperty;
-import com.gitee.swsk33.swmmsensorthings.eventbus.subscriber.mqtt.RainGageSubscriber;
+import com.gitee.swsk33.swmmsensorthings.eventbus.subscriber.DataReceiverContext;
+import com.gitee.swsk33.swmmsensorthings.eventbus.subscriber.http.HttpObservationReceiver;
+import com.gitee.swsk33.swmmsensorthings.eventbus.subscriber.mqtt.MqttObservationSubscriber;
 import com.gitee.swsk33.swmmsensorthings.eventbus.subscriber.reactor.SensorThingsSubscriber;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.DatastreamFactory;
 import com.gitee.swsk33.swmmsensorthings.mapper.factory.impl.FeatureOfInterestFactory;
@@ -63,10 +65,8 @@ public class SimulationTask implements Runnable, InitializingBean {
 	 */
 	private final SWMM swmm;
 
-	/**
-	 * 存放当前模型订阅的全部主题列表，一个主题对应一个雨量计对象
-	 */
-	private final List<String> subscribedTopics;
+	@Autowired
+	private DataReceiverContext receiverContext;
 
 	@Autowired
 	private MqttClient mqttClient;
@@ -91,8 +91,6 @@ public class SimulationTask implements Runnable, InitializingBean {
 		// 初始化水文模型
 		this.swmm = new SWMM(inputFile);
 		this.swmm.start();
-		// 初始化订阅者列表
-		this.subscribedTopics = new ArrayList<>();
 		// 初始化Job对象
 		this.job = new Job();
 		job.setJobID(this.id);
@@ -117,7 +115,7 @@ public class SimulationTask implements Runnable, InitializingBean {
 		// 遍历初始化
 		for (VisualObject object : objects) {
 			// 若对象对应的传感器（实体或者虚拟）存在，说明该对象对应的全部SensorThings对象存在，不进行该对象初始化
-			if (sensorThingsClient.existByName(object.getId(), Sensor.class)) {
+			if (sensorThingsClient.existByName(NameUtils.generateObjectName(object), Sensor.class)) {
 				log.warn("对象{}所对应的SensorThings对象已存在，跳过其转换映射与初始化步骤！", object.getId());
 				continue;
 			}
@@ -157,12 +155,16 @@ public class SimulationTask implements Runnable, InitializingBean {
 			}
 		}
 		// 订阅全部雨量计相关的数据流
+		List<String> subscribedTopics = new ArrayList<>();
 		for (Datastream datastream : datastreams) {
 			String topic = String.format("v1.1/Datastreams(%d)/Observations?$expand=%s", (int) datastream.getId(), String.join(",", SensorThingsExpandProperty.getExpandProperty(Observation.class)));
-			mqttClient.subscribe(topic, beanFactory.getBean(RainGageSubscriber.class, swmm));
+			mqttClient.subscribe(topic, beanFactory.getBean(MqttObservationSubscriber.class, swmm));
 			subscribedTopics.add(topic);
+			receiverContext.addMqttTopics(id, subscribedTopics);
 			log.info("已订阅观测数据主题：{}", topic);
 		}
+		// 4. 创建对应的HTTP数据接收器
+		receiverContext.addHttpReceiver(id, beanFactory.getBean(HttpObservationReceiver.class, this.swmm));
 	}
 
 	/**
@@ -172,9 +174,16 @@ public class SimulationTask implements Runnable, InitializingBean {
 		// 1. 停止模型
 		this.swmm.close();
 		// 2. 取消订阅全部相关传感器
+		List<String> subscribedTopics = receiverContext.getMqttTopics(id);
+		if (subscribedTopics == null) {
+			log.warn("任务：{}没有对应的MQTT订阅者列表！", id);
+			return;
+		}
 		for (String topic : subscribedTopics) {
 			mqttClient.unsubscribe(topic);
 		}
+		// 3. 移除HTTP接收器
+		receiverContext.removeHttpReceiver(id);
 	}
 
 	/**
