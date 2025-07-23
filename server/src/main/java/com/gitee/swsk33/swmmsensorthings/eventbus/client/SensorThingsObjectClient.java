@@ -3,11 +3,14 @@ package com.gitee.swsk33.swmmsensorthings.eventbus.client;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.gitee.swsk33.swmmsensorthings.eventbus.helper.RequestClientHelper;
+import com.gitee.swsk33.swmmsensorthings.eventbus.property.SensorThingsServerProperties;
 import com.gitee.swsk33.swmmsensorthings.model.SensorThingsObject;
-import com.gitee.swsk33.swmmsensorthings.eventbus.util.RequestClient;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,10 +25,20 @@ import static com.gitee.swsk33.swmmsensorthings.eventbus.param.SensorThingsPrefi
  */
 @Slf4j
 @Component
-public class SensorThingsObjectClient {
+public class SensorThingsObjectClient implements InitializingBean {
+
+	private RequestClientHelper clientHelper;
 
 	@Autowired
-	private RequestClient requestClient;
+	private SensorThingsServerProperties properties;
+
+	@Autowired
+	private BeanFactory beanFactory;
+
+	@Override
+	public void afterPropertiesSet() {
+		this.clientHelper = beanFactory.getBean(RequestClientHelper.class, String.format("%s/v1.1", properties.getUrl()));
+	}
 
 	/**
 	 * 添加一个SensorThings对象
@@ -34,7 +47,7 @@ public class SensorThingsObjectClient {
 	 * @return 是否添加成功
 	 */
 	public <T extends SensorThingsObject> boolean add(T object) {
-		try (Response response = requestClient.post(getTypePrefix(object.getClass()), JSON.toJSONBytes(object))) {
+		try (Response response = clientHelper.post(getTypePrefix(object.getClass()), JSON.toJSONBytes(object))) {
 			if (response.code() == CREATED) {
 				return true;
 			}
@@ -57,7 +70,7 @@ public class SensorThingsObjectClient {
 	 * @return 是否移除成功
 	 */
 	public <T extends SensorThingsObject> boolean remove(Object id, Class<T> type) {
-		try (Response response = requestClient.delete(String.format("%s(%s)", getTypePrefix(type), id))) {
+		try (Response response = clientHelper.delete(String.format("%s(%s)", getTypePrefix(type), id))) {
 			if (response.code() == OK) {
 				return true;
 			}
@@ -84,7 +97,7 @@ public class SensorThingsObjectClient {
 		if (expands != null && expands.length > 0) {
 			path += "?$expand=" + String.join(",", expands);
 		}
-		try (Response response = requestClient.get(path)) {
+		try (Response response = clientHelper.get(path)) {
 			if (response.code() == OK) {
 				ResponseBody body = response.body();
 				if (body != null) {
@@ -114,7 +127,7 @@ public class SensorThingsObjectClient {
 		if (expands != null && expands.length > 0) {
 			path += "&$expand=" + String.join(",", expands);
 		}
-		try (Response response = requestClient.get(path)) {
+		try (Response response = clientHelper.get(path)) {
 			if (response.code() == OK) {
 				ResponseBody body = response.body();
 				if (body != null) {
@@ -141,7 +154,7 @@ public class SensorThingsObjectClient {
 	 * @return 获取的SensorThings对象列表，不存在返回空列表
 	 */
 	public <T extends SensorThingsObject> List<T> getAll(Class<T> type) {
-		try (Response response = requestClient.get(getTypePrefix(type))) {
+		try (Response response = clientHelper.get(getTypePrefix(type))) {
 			if (response.code() == OK) {
 				ResponseBody body = response.body();
 				if (body != null) {

@@ -31,6 +31,13 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- Spring Boot AOP -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Okhttp客户端 -->
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>

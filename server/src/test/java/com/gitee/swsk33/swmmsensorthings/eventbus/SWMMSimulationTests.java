@@ -20,7 +20,7 @@ import static io.github.swsk33.swmmjava.param.ObjectTypeCode.SUB_CATCHMENT;
  */
 @Slf4j
 @SpringBootTest
-public class SWMMSimulation implements InitializingBean {
+public class SWMMSimulationTests implements InitializingBean {
 
 	private SWMM swmm;
 

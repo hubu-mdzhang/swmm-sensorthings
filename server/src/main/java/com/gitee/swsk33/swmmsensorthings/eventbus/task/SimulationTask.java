@@ -68,7 +68,7 @@ public class SimulationTask implements Runnable, InitializingBean {
 	@Autowired
 	private DataReceiverContext receiverContext;
 
-	@Autowired
+	@Resource(name = "mqttClient")
 	private MqttClient mqttClient;
 
 	@Autowired

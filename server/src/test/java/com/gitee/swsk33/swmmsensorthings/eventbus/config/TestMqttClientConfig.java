@@ -10,25 +10,25 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 自动完成MQTT配置，并订阅全部传感器数据流
+ * 测试用的MQTT客户端
  */
 @Slf4j
 @Configuration
-public class MqttClientConfig {
+public class TestMqttClientConfig {
 
 	@Autowired
 	private SensorThingsServerProperties properties;
 
-	@Bean("mqttClient")
+	@Bean("testMqttClient")
 	public MqttClient mqttClient() throws Exception {
 		// 连接SensorThings服务器MQTT端口
-		MqttClient subscriberClient = new MqttClient(String.format("tcp://%s:%d", properties.getMqttBrokerHost(), properties.getMqttBrokerPort()), "SensorThings-Subscriber", new MemoryPersistence());
+		MqttClient subscriberClient = new MqttClient(String.format("tcp://%s:%d", properties.getMqttBrokerHost(), properties.getMqttBrokerPort()), "SensorThings-Publisher", new MemoryPersistence());
 		MqttConnectOptions connectOptions = new MqttConnectOptions();
 		connectOptions.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
 		connectOptions.setAutomaticReconnect(true);
 		// 连接MQTT Broker
 		subscriberClient.connect(connectOptions);
-		log.info("------- 传感数据驱动订阅，启动！ -------");
+		log.info("已完成测试用MQTT客户端配置！");
 		return subscriberClient;
 	}
 

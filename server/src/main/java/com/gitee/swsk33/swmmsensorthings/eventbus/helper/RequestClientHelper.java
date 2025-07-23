@@ -1,44 +1,45 @@
-package com.gitee.swsk33.swmmsensorthings.eventbus.util;
+package com.gitee.swsk33.swmmsensorthings.eventbus.helper;
 
 import com.gitee.swsk33.swmmsensorthings.eventbus.param.HttpMethod;
-import com.gitee.swsk33.swmmsensorthings.eventbus.property.SensorThingsServerProperties;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 /**
- * 调用OkHttp发起请求的客户端实用类
+ * 调用OkHttp发起请求的客户端封装
  */
 @Slf4j
 @Component
-public class RequestClient {
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class RequestClientHelper {
 
 	/**
 	 * Okhttp客户端对象
 	 */
-	private OkHttpClient client;
+	private final OkHttpClient client;
 
 	/**
 	 * 请求网址前缀
 	 */
-	private String urlPrefix;
+	private final String urlPrefix;
 
-	@Autowired
-	private SensorThingsServerProperties properties;
-
-	@PostConstruct
-	private void initialize() {
+	/**
+	 * 带参构造器
+	 *
+	 * @param prefix 请求前缀
+	 */
+	public RequestClientHelper(String prefix) {
 		// 初始化一些属性
 		client = new OkHttpClient();
-		urlPrefix = String.format("%s/v1.1", properties.getUrl());
-		log.info("HTTP请求客户端已完成初始化！");
+		this.urlPrefix = prefix;
+		log.info("HTTP请求客户端已完成初始化！请求前缀：{}", urlPrefix);
 	}
 
 	/**
