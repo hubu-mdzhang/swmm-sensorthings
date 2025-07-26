@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 记录延迟指标的列表
+ * 记录传输方式延迟指标的列表
  */
 @Component
-public class DelayList {
+public class TransferDelayList {
 
 	/**
 	 * 记录每一个模拟步长执行时，使用HTTP发送观测数据的时间

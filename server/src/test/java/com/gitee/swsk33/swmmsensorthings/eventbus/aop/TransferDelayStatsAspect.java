@@ -1,6 +1,6 @@
 package com.gitee.swsk33.swmmsensorthings.eventbus.aop;
 
-import com.gitee.swsk33.swmmsensorthings.eventbus.context.DelayList;
+import com.gitee.swsk33.swmmsensorthings.eventbus.context.TransferDelayList;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class TransferDelayStatsAspect {
 
 	@Autowired
-	private DelayList delayList;
+	private TransferDelayList transferDelayList;
 
 	/**
 	 * HTTP接收方法切面
@@ -42,7 +42,7 @@ public class TransferDelayStatsAspect {
 	public void httpReceiveTime() {
 		LocalDateTime now = LocalDateTime.now();
 		log.info("接收到HTTP数据时间：{}", now);
-		delayList.httpReceiveTimeList.add(now);
+		transferDelayList.httpReceiveTimeList.add(now);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class TransferDelayStatsAspect {
 	public void mqttSubscribeTime() {
 		LocalDateTime now = LocalDateTime.now();
 		log.info("接收到MQTT数据时间：{}", now);
-		delayList.mqttReceiveTimeList.add(now);
+		transferDelayList.mqttReceiveTimeList.add(now);
 	}
 
 }
