@@ -2,7 +2,6 @@ package com.gitee.swsk33.swmmsensorthings.eventbus.context;
 
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,13 +12,13 @@ import java.util.List;
 public class ReadDelayList {
 
 	/**
-	 * 记录每一个模拟步长执行时，使用同步方法读取一组计算结果的时间
+	 * 记录每一个模拟步长执行时，使用同步方法读取一组计算结果的时间（纳秒）
 	 */
-	public final List<LocalDateTime> syncReadTimeList = new ArrayList<>();
+	public final List<Long> syncReadTimeList = new ArrayList<>();
 
 	/**
-	 * 记录每一个模拟步长执行时，使用异步反应式流读取一组计算结果的时间
+	 * 记录每一个模拟步长执行时，使用异步反应式流读取一组计算结果的时间（纳秒）
 	 */
-	public final List<LocalDateTime> reactiveReadTimeList = new ArrayList<>();
+	public final List<Long> reactiveReadTimeList = new ArrayList<>();
 
 }
