@@ -97,7 +97,7 @@ public class ReadDelayStatsTests {
 		for (int i = 0; i < STEP_COUNT; i++) {
 			// 运行一个步长
 			DataSubscriber.isStats = true;
-			swmm.step();
+			Thread.startVirtualThread(swmm::step);
 			// 等待直到读取到指定个数数据
 			while (readCount.get() < readDataCount) {
 				// ...

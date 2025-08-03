@@ -63,6 +63,7 @@ public class RequestClientHelper {
 		// 构建请求
 		Request request = new Request.Builder()
 				.url(urlPrefix + path)
+				.addHeader("Content-Type", "application/json")
 				.method(method, requestBody)
 				.build();
 		// 发起请求

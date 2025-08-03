@@ -6,7 +6,7 @@ import com.gitee.swsk33.swmmsensorthings.model.Observation;
 import io.github.swsk33.swmmjava.model.TimeStep;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.Random;
  * 数据实用类
  */
 @Slf4j
-@SpringBootTest
+@Component
 public class DataUtils {
 
 	@Autowired
@@ -28,7 +28,7 @@ public class DataUtils {
 	 *
 	 * @param datastreamId 数据流id
 	 * @param start        起始时间
-	 * @param stepLength   时间步长长度
+	 * @param stepLength   时间步长长度（秒）
 	 * @param count        生成数据个数
 	 * @return 生成的数据
 	 */

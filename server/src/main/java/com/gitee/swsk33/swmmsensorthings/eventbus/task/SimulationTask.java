@@ -81,6 +81,11 @@ public class SimulationTask implements Runnable, InitializingBean {
 	private Map<String, Job> jobList;
 
 	/**
+	 * 是否已初始化
+	 */
+	private volatile boolean initialized = false;
+
+	/**
 	 * 构造函数
 	 *
 	 * @param inputFile SWMM模型的输入文件路径
@@ -187,6 +192,15 @@ public class SimulationTask implements Runnable, InitializingBean {
 	}
 
 	/**
+	 * 等待模型初始化完成
+	 */
+	public void waitForInitialization() {
+		while (!initialized) {
+			// ...
+		}
+	}
+
+	/**
 	 * 水文模型完整模拟操作，包括：
 	 * <ol>
 	 *     <li>首先初始化，包括水文模型文件读取、转换为SensorThings API对象，并订阅其中对应名称的雨量计MQTT数据</li>
@@ -200,6 +214,7 @@ public class SimulationTask implements Runnable, InitializingBean {
 			// 初始化模型
 			initialize();
 			this.job.setStatus(JobStatus.RUNNING);
+			this.initialized = true;
 			while (true) {
 				if (swmm.isComplete()) {
 					// 释放资源

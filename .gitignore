@@ -37,3 +37,5 @@ dist/
 # 自定义
 input-data/
 test-output/
+test-data/*.out
+test-data/*.rpt

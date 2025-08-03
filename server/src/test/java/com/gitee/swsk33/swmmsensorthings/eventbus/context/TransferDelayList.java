@@ -13,22 +13,22 @@ import java.util.List;
 public class TransferDelayList {
 
 	/**
-	 * 记录每一个模拟步长执行时，使用HTTP发送观测数据的时间
+	 * 记录每一个模拟步长执行时，使用HTTP发送观测数据的时间（单位：纳秒）
 	 */
 	public final List<LocalDateTime> httpSendTimeList = new ArrayList<>();
 
 	/**
-	 * 记录每一个模拟步长执行时，使用HTTP接收到观测数据的时间
+	 * 记录每一个模拟步长执行时，使用HTTP接收到观测数据的时间（单位：纳秒）
 	 */
 	public final List<LocalDateTime> httpReceiveTimeList = new ArrayList<>();
 
 	/**
-	 * 记录每一个模拟步长执行时，使用MQTT发布观测数据的时间
+	 * 记录每一个模拟步长执行时，使用MQTT发布观测数据的时间（单位：纳秒）
 	 */
 	public final List<LocalDateTime> mqttSendTimeList = new ArrayList<>();
 
 	/**
-	 * 记录每一个模拟步长执行时，使用MQTT订阅到观测数据的时间
+	 * 记录每一个模拟步长执行时，使用MQTT订阅到观测数据的时间（单位：纳秒）
 	 */
 	public final List<LocalDateTime> mqttReceiveTimeList = new ArrayList<>();
 
