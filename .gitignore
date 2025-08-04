@@ -39,3 +39,4 @@ input-data/
 test-output/
 test-data/*.out
 test-data/*.rpt
+test-data/*.ini

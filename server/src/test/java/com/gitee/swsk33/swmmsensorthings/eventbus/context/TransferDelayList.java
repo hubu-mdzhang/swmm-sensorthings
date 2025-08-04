@@ -32,4 +32,14 @@ public class TransferDelayList {
 	 */
 	public final List<LocalDateTime> mqttReceiveTimeList = new ArrayList<>();
 
+	/**
+	 * 重置全部记录
+	 */
+	public void clearAll() {
+		httpSendTimeList.clear();
+		httpReceiveTimeList.clear();
+		mqttSendTimeList.clear();
+		mqttReceiveTimeList.clear();
+	}
+
 }

@@ -21,4 +21,12 @@ public class ReadDelayList {
 	 */
 	public final List<Long> reactiveReadTimeList = new ArrayList<>();
 
+	/**
+	 * 重置全部记录
+	 */
+	public void clearAll() {
+		syncReadTimeList.clear();
+		reactiveReadTimeList.clear();
+	}
+
 }

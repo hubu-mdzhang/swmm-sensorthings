@@ -9,7 +9,6 @@ import com.gitee.swsk33.swmmsensorthings.model.Observation;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.BeanFactory;
@@ -18,11 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
  * 用于比较HTTP和MQTT传输方式延迟的统计测试类型
@@ -80,37 +80,62 @@ public class TransferDelayStatsTests implements InitializingBean {
 	 * @param data         发送的数据
 	 */
 	private void publishMqttData(int datastreamId, Observation data) throws Exception {
-		MqttMessage message = new MqttMessage();
-		message.setPayload(JSON.toJSONBytes(data));
 		// 记录时间
 		transferDelayList.mqttSendTimeList.add(LocalDateTime.now());
-		mqttClient.publish(String.format("v1.1/Datastreams(%d)/Observations", datastreamId), message);
+		mqttClient.publish(String.format("v1.1/Datastreams(%d)/Observations", datastreamId), JSON.toJSONBytes(data), 0, false);
+		Thread.sleep(150);
 	}
 
+	/**
+	 * 该方法仅是一轮测试对比
+	 * 测试步骤：
+	 * 1. 生成三组数据，分别是100、500和1000个观测数据
+	 * 2. 每组数据进行一轮测试，一轮测试过程中创建两个一样的水文模型模拟任务，分别测试HTTP和MQTT延迟
+	 * 3. 记录每轮数据中每个步长延迟时间，单位ns
+	 */
 	@Test
 	@DisplayName("测试传输方法延迟")
 	void testTransferDelay() throws Exception {
-		// 创建水文模型任务
-		SimulationTask httpTask = beanFactory.getBean(SimulationTask.class, "test-data/input.inp");
-		taskPool.execute(httpTask);
+		// 1. 创建数据
+		LocalDateTime start = LocalDateTime.of(2025, 7, 1, 12, 0, 0);
+		int stepLengthSecond = 60;
+		int count = 100;
+		List<Observation> dataList = dataUtils.generateObservations(1, start, stepLengthSecond, count);
+		// 2. 执行一轮测试
+		String inputFile = "test-data/input.inp";
+		// 创建水文模型HTTP任务
+		SimulationTask httpTask = beanFactory.getBean(SimulationTask.class, inputFile);
+		Future<?> httpFuture = taskPool.submit(httpTask);
 		httpTask.waitForInitialization();
 		// 获取id
 		String id = httpTask.getId();
 		log.info("已创建HTTP测试水文模型任务：{}", id);
-		// 生成数据
-		LocalDateTime start = LocalDateTime.of(2025, 7, 1, 12, 0, 0);
-		List<Observation> dataList = dataUtils.generateObservations(1, start, 60, 10);
 		for (Observation data : dataList) {
 			sendHttpData(id, data);
 		}
 		log.info("HTTP测试完成！");
-		List<Long> delay = new ArrayList<>();
-		for (int i = 0; i < transferDelayList.httpSendTimeList.size(); i++) {
-			LocalDateTime send = transferDelayList.httpSendTimeList.get(i);
-			LocalDateTime receive = transferDelayList.httpReceiveTimeList.get(i);
-			delay.add(Duration.between(send, receive).toNanos());
+		httpTask.dispose();
+		httpFuture.cancel(true);
+		List<Long> httpDelayList = dataUtils.computeDelay(transferDelayList.httpSendTimeList, transferDelayList.httpReceiveTimeList);
+		// 创建水文模型MQTT任务
+		SimulationTask mqttTask = beanFactory.getBean(SimulationTask.class, inputFile);
+		Future<?> mqttFuture = taskPool.submit(mqttTask);
+		mqttTask.waitForInitialization();
+		// 获取id
+		id = mqttTask.getId();
+		log.info("已创建MQTT测试水文模型任务：{}", id);
+		for (Observation data : dataList) {
+			publishMqttData(1, data);
 		}
-		System.out.println(delay);
+		log.info("MQTT测试完成！");
+		mqttTask.dispose();
+		mqttFuture.cancel(true);
+		List<Long> mqttDelayList = dataUtils.computeDelay(transferDelayList.mqttSendTimeList, transferDelayList.mqttReceiveTimeList);
+		// 保存输出结果
+		Map<String, List<Long>> result = new HashMap<>();
+		result.put("HTTP", httpDelayList);
+		result.put("MQTT", mqttDelayList);
+		dataUtils.writeCSV(String.format("test-output/transfer-delay-%d.csv", count), result);
 	}
 
 }

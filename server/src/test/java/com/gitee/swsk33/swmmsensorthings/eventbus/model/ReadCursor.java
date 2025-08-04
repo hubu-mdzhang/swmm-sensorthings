@@ -55,7 +55,10 @@ public class ReadCursor {
 	 */
 	private int property;
 
-	static {
+	/**
+	 * 初始化常量列表
+	 */
+	public static void init() {
 		// 初始化读取类型列表
 		READ_TYPES.addAll(List.of(NODE, LINK));
 		// 初始化读取属性列表

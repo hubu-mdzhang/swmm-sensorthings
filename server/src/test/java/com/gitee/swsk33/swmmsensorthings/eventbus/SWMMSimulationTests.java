@@ -26,7 +26,7 @@ public class SWMMSimulationTests implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() {
-		this.swmm = new SWMM("input-data/d42a78e9ca2342d69e3963cd85d47eec.inp");
+		this.swmm = new SWMM("test-data/input.inp");
 		this.swmm.start();
 	}
 

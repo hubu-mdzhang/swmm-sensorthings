@@ -3,8 +3,15 @@ package com.gitee.swsk33.swmmsensorthings.eventbus.stats;
 import com.gitee.swsk33.swmmsensorthings.eventbus.context.ReadDelayList;
 import com.gitee.swsk33.swmmsensorthings.eventbus.model.ReadCursor;
 import com.gitee.swsk33.swmmsensorthings.eventbus.subscriber.DataSubscriber;
+import com.gitee.swsk33.swmmsensorthings.eventbus.util.DataUtils;
+import com.gitee.swsk33.swmmsensorthings.model.Observation;
 import io.github.swsk33.swmmjava.SWMM;
 import io.github.swsk33.swmmjava.SWMMNative;
+import io.github.swsk33.swmmjava.model.RainGage;
+import io.github.swsk33.swmmjava.param.GagePropertyCode;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -22,6 +29,7 @@ import static io.github.swsk33.swmmjava.param.ObjectTypeCode.NODE;
 /**
  * 面向对象数据读取方式延迟对比
  */
+@Slf4j
 @SpringBootTest
 public class ReadDelayStatsTests {
 
@@ -32,6 +40,9 @@ public class ReadDelayStatsTests {
 
 	@Autowired
 	private ReadDelayList readDelayList;
+
+	@Autowired
+	private DataUtils dataUtils;
 
 	/**
 	 * 执行步长模拟时，每个步长执行后同步读取SWMM模型的指定个数的计算结果对象，并记录耗时
@@ -105,11 +116,47 @@ public class ReadDelayStatsTests {
 			// 记录结束时间
 			DataSubscriber.isStats = false;
 			LocalDateTime end = LocalDateTime.now();
-			readDelayList.syncReadTimeList.add(Duration.between(DataSubscriber.firstTime, end).toNanos());
+			readDelayList.reactiveReadTimeList.add(Duration.between(DataSubscriber.firstTime, end).toNanos());
 			// 重置部分计数变量
 			readCount.set(0);
 			DataSubscriber.firstTime = null;
 		}
+	}
+
+	@Test
+	@DisplayName("测试读取延迟")
+	void testReadDelay() throws Exception {
+		ReadCursor.init();
+		// 创建数据
+		LocalDateTime start = LocalDateTime.of(2025, 7, 1, 12, 0, 0);
+		int stepLengthSecond = 60;
+		int readDataCount = 30;
+		List<Observation> dataList = dataUtils.generateObservations(1, start, stepLengthSecond, STEP_COUNT);
+		// 2. 执行一轮测试
+		String inputFile = "test-data/input.inp";
+		log.info("正在测试同步读取...");
+		SWMMNative swmmNative = new SWMMNative();
+		swmmNative.open(inputFile, inputFile + ".rpt", inputFile + ".out");
+		swmmNative.start(0);
+		for (Observation observation : dataList) {
+			swmmNative.setValue(GagePropertyCode.RAINFALL, 0, (Double) observation.getResult());
+			syncReadData(swmmNative, readDataCount);
+		}
+		swmmNative.close();
+		log.info("正在测试异步读取...");
+		SWMM swmm = new SWMM(inputFile);
+		for (Observation observation : dataList) {
+			RainGage patch = new RainGage();
+			patch.setIndex(0);
+			patch.setRainfall((Double) observation.getResult());
+			swmm.setValue(patch);
+			reactiveReadData(swmm, readDataCount);
+		}
+		Thread.sleep(3000);
+		Map<String, List<Long>> result = new HashMap<>();
+		result.put("sync", readDelayList.syncReadTimeList);
+		result.put("reactive", readDelayList.reactiveReadTimeList);
+		dataUtils.writeCSV(String.format("test-output/read-delay-%d.csv", readDataCount), result);
 	}
 
 }

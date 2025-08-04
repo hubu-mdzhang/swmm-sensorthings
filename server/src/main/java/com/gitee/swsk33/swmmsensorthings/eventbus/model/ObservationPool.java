@@ -70,7 +70,7 @@ public class ObservationPool {
 		}
 		// 首先循环丢弃旧观测数据
 		while (headData != null && this.currentStepData.afterDataTime(headData)) {
-			log.warn("数据流：{}的数据：{}早于当前时间步长，将会丢弃...", headData.getDatastream().getId(), headData.getId());
+			log.warn("数据流：{}的数据：{}时间为：{}，早于当前时间步长：{}，将会丢弃...", headData.getDatastream().getId(), headData.getId(), headData.getPhenomenonTime(), this.currentStepData.getTimeStep().getStart());
 			this.dataCacheQueue.poll();
 			headData = this.dataCacheQueue.peek();
 		}

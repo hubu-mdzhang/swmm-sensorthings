@@ -175,7 +175,7 @@ public class SimulationTask implements Runnable, InitializingBean {
 	/**
 	 * 模拟完成后的资源回收操作
 	 */
-	private void dispose() throws Exception {
+	public void dispose() throws Exception {
 		// 1. 停止模型
 		this.swmm.close();
 		// 2. 取消订阅全部相关传感器
@@ -186,6 +186,7 @@ public class SimulationTask implements Runnable, InitializingBean {
 		}
 		for (String topic : subscribedTopics) {
 			mqttClient.unsubscribe(topic);
+			log.warn("已取消订阅：{}", topic);
 		}
 		// 3. 移除HTTP接收器
 		receiverContext.removeHttpReceiver(id);
