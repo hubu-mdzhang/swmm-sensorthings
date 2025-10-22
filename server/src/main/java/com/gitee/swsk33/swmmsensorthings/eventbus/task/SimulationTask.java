@@ -18,6 +18,7 @@ import com.gitee.swsk33.swmmsensorthings.model.FeatureOfInterest;
 import com.gitee.swsk33.swmmsensorthings.model.Observation;
 import com.gitee.swsk33.swmmsensorthings.model.Sensor;
 import io.github.swsk33.swmmjava.SWMM;
+import io.github.swsk33.swmmjava.model.RainGage;
 import io.github.swsk33.swmmjava.model.Subcatchment;
 import io.github.swsk33.swmmjava.model.VisualObject;
 import jakarta.annotation.Resource;
@@ -63,6 +64,7 @@ public class SimulationTask implements Runnable, InitializingBean {
 	/**
 	 * 正在执行的水文模型实例
 	 */
+	@Getter
 	private final SWMM swmm;
 
 	@Autowired
@@ -198,6 +200,25 @@ public class SimulationTask implements Runnable, InitializingBean {
 	public void waitForInitialization() {
 		while (!initialized) {
 			// ...
+		}
+	}
+
+	/**
+	 * 手动运行模型
+	 */
+	public void runModel(Double value) {
+		RainGage gage = (RainGage) this.swmm.getObject(GAGE, 0);
+		// 输入数据
+		try {
+			RainGage patch = new RainGage();
+			patch.setIndex(gage.getIndex());
+			patch.setRainfall(value);
+			this.swmm.setValue(patch);
+			// 执行一个步长
+			this.swmm.step();
+			log.info("已输入并完成一个时间步长！当前模拟时间：{}，输入：{}", this.swmm.getSystem().getCurrentDate(), value);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
