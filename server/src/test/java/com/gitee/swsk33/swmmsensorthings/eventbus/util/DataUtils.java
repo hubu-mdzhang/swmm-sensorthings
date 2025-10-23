@@ -30,7 +30,7 @@ public class DataUtils {
 	private SensorThingsObjectClient sensorThingsClient;
 
 	/**
-	 * 生成观测属u就
+	 * 生成观测数据
 	 *
 	 * @param datastreamId 数据流id
 	 * @param start        起始时间
@@ -88,11 +88,11 @@ public class DataUtils {
 	 * @param path    文件路径
 	 * @param content 文件内容
 	 */
-	public void writeCSV(String path, Map<String, List<Long>> content) {
+	public void writeCSV(String path, Map<String, List<Double>> content) {
 		// 对应顺序
 		List<String> headers = new ArrayList<>();
-		List<List<Long>> data = new ArrayList<>();
-		for (Map.Entry<String, List<Long>> entry : content.entrySet()) {
+		List<List<Double>> data = new ArrayList<>();
+		for (Map.Entry<String, List<Double>> entry : content.entrySet()) {
 			headers.add(entry.getKey());
 			data.add(entry.getValue());
 		}

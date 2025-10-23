@@ -2,30 +2,26 @@ package com.gitee.swsk33.swmmsensorthings.eventbus;
 
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson2.JSON;
+import com.gitee.swsk33.swmmsensorthings.eventbus.util.DataUtils;
 import com.gitee.swsk33.swmmsensorthings.eventbus.util.DoubleValueUtils;
 import com.gitee.swsk33.swmmsensorthings.model.Observation;
 import io.github.swsk33.swmmjava.SWMM;
+import io.github.swsk33.swmmjava.model.Link;
 import io.github.swsk33.swmmjava.model.Node;
 import io.github.swsk33.swmmjava.model.RainGage;
 import io.github.swsk33.swmmjava.model.Subcatchment;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
+import java.util.*;
 
-import static io.github.swsk33.swmmjava.param.ObjectTypeCode.NODE;
-import static io.github.swsk33.swmmjava.param.ObjectTypeCode.SUB_CATCHMENT;
+import static io.github.swsk33.swmmjava.param.ObjectTypeCode.*;
 
 /**
  * 单独测试SWMM模拟
@@ -35,10 +31,7 @@ import static io.github.swsk33.swmmjava.param.ObjectTypeCode.SUB_CATCHMENT;
 public class SWMMSimulationTests implements InitializingBean {
 
 	@Autowired
-	private BeanFactory beanFactory;
-
-	@Resource(name = "processTaskPool")
-	private ExecutorService taskPool;
+	private DataUtils dataUtils;
 
 	private SWMM swmm;
 
@@ -100,14 +93,31 @@ public class SWMMSimulationTests implements InitializingBean {
 	@Test
 	@DisplayName("测试运行模型任务")
 	void testRunModelTask() throws Exception {
-//		SimulationTask task = beanFactory.getBean(SimulationTask.class, "test-data/input.inp");
-//		taskPool.submit(task);
-//		task.waitForInitialization();
 		List<Observation> dataList = JSON.parseArray(FileUtil.readBytes(Paths.get("input-data/rainfall.json").toAbsolutePath()), Observation.class);
+		// 平均值数据
+		Map<String, List<Double>> totalResults = new HashMap<>();
+		// 区域S18径流
+		totalResults.put("S18", new ArrayList<>());
+		// 连接处11003测流入水量
+		totalResults.put("11003", new ArrayList<>());
+		// 出水口point41流入水量
+		totalResults.put("point41", new ArrayList<>());
+		// 管道15当前水量
+		totalResults.put("15", new ArrayList<>());
 		for (int i = 0; i < dataList.size() - 1; i++) {
 			Observation data = dataList.get(i);
 			LocalDateTime end = dataList.get(i + 1).getPhenomenonTime();
 			LocalDateTime simulationTime = this.swmm.getSystem().getCurrentDate();
+			// 记录当前步长所有数据
+			Map<String, List<Double>> stepResults = new HashMap<>();
+			// 区域S18径流
+			stepResults.put("S18", new ArrayList<>());
+			// 连接处11003测流入水量
+			stepResults.put("11003", new ArrayList<>());
+			// 出水口point41流入水量
+			stepResults.put("point41", new ArrayList<>());
+			// 管道15当前水量
+			stepResults.put("15", new ArrayList<>());
 			while (simulationTime.isBefore(end)) {
 				// 随机模拟降水数据
 				RainGage gage = new RainGage();
@@ -118,11 +128,30 @@ public class SWMMSimulationTests implements InitializingBean {
 				simulationTime = this.swmm.getSystem().getCurrentDate();
 				log.info("当前时间：{}", simulationTime);
 				log.info("降水：{}", gage.getRainfall());
-				log.info("径流：{}", ((Subcatchment) this.swmm.getObject(SUB_CATCHMENT, 1)).getRunoff());
-				log.info("侧面水量：{}", ((Node) this.swmm.getObject(NODE, 1)).getLaterInflow());
+				double s18Rainfall = ((Subcatchment) this.swmm.getObject(SUB_CATCHMENT, "S18")).getRunoff();
+				stepResults.get("S18").add(s18Rainfall);
+				log.info("S18径流：{}", s18Rainfall);
+				double j11003LInf = ((Node) this.swmm.getObject(NODE, "11003")).getLaterInflow();
+				stepResults.get("11003").add(j11003LInf);
+				log.info("J11003侧面水量：{}", j11003LInf);
+				double p41Inf = ((Node) this.swmm.getObject(NODE, "point41")).getTotalInflow();
+				stepResults.get("point41").add(p41Inf);
+				log.info("point41流入水量：{}", p41Inf);
+				double l15cf = ((Link) this.swmm.getObject(LINK, "15")).getCurrentFlow();
+				stepResults.get("15").add(l15cf);
+				log.info("L15当前流量：{}", l15cf);
 				log.info("==================================");
 			}
+			// 取平均值
+			totalResults.get("S18").add(stepResults.get("S18").stream().mapToDouble(Double::doubleValue).average().getAsDouble());
+			totalResults.get("11003").add(stepResults.get("11003").stream().mapToDouble(Double::doubleValue).average().getAsDouble());
+			totalResults.get("point41").add(stepResults.get("point41").stream().mapToDouble(Double::doubleValue).average().getAsDouble());
+			totalResults.get("15").add(stepResults.get("15").stream().mapToDouble(Double::doubleValue).average().getAsDouble());
+			for (String key : stepResults.keySet()) {
+				stepResults.get(key).clear();
+			}
 		}
+		dataUtils.writeCSV("test-output/result.csv", totalResults);
 	}
 
 }

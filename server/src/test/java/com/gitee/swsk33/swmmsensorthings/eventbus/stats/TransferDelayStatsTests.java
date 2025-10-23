@@ -135,7 +135,7 @@ public class TransferDelayStatsTests implements InitializingBean {
 		Map<String, List<Long>> result = new HashMap<>();
 		result.put("HTTP", httpDelayList);
 		result.put("MQTT", mqttDelayList);
-		dataUtils.writeCSV(String.format("test-output/transfer-delay-%d.csv", count), result);
+//		dataUtils.writeCSV(String.format("test-output/transfer-delay-%d.csv", count), result);
 	}
 
 }

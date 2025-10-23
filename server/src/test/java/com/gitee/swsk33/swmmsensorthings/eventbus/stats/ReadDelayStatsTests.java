@@ -156,7 +156,7 @@ public class ReadDelayStatsTests {
 		Map<String, List<Long>> result = new HashMap<>();
 		result.put("sync", readDelayList.syncReadTimeList);
 		result.put("reactive", readDelayList.reactiveReadTimeList);
-		dataUtils.writeCSV(String.format("test-output/read-delay-%d.csv", readDataCount), result);
+//		dataUtils.writeCSV(String.format("test-output/read-delay-%d.csv", readDataCount), result);
 	}
 
 }
