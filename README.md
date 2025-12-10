@@ -1,4 +1,3 @@
-# SWMM到SensorThings映射
+# Mapping and real-time modeling from SWMM to SensorThings
 
-## 介绍
-将SWMM水文模型映射到SensorThings API概念模型对象，并统一使用SensorThings概念模型表达。
+Map the SWMM hydrological model to the SensorThings API conceptual model object and uniformly express it using the SensorThings conceptual model.
